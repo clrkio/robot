@@ -7,9 +7,14 @@
 
 package frc.robot;
 
+import frc.robot.config.*;
+import frc.robot.common.*;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.drivetrain.DriveTrain;
+import frc.robot.limelight.AutoAlign;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,6 +29,10 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  private Joystick driveGamepad;
+  private AutoAlign autoAlign; 
+  private DriveTrain driveTrain; 
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -33,6 +42,10 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    driveGamepad = new Joystick(Config.GAMEPAD_driveJoystickId);
+    autoAlign = new AutoAlign(); 
+    driveTrain = new DriveTrain(); 
   }
 
   /**
@@ -86,6 +99,23 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    
+    // functions that affect driving
+    // autonomous buttons take precedence 
+    if (driveGamepad.getRawButton(Config.GAMEPAD_driveAutoButton)) {
+      DriveConstants drive = autoAlign.getLimelightTracking(); 
+      if (drive != null) {
+        //driveTrain.robotDrive.curvatureDrive(drive.xSpeed, drive.zRotation, false);
+        return; 
+      }
+    }
+
+    double forwardValue = driveGamepad.getRawAxis(Config.GAMEPAD_driveForwardAxisId);
+    double reverseValue = driveGamepad.getRawAxis(Config.GAMEPAD_driveReverseAxisId);
+    double driveTurnAxisId = driveGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
+    boolean quickTurn = driveGamepad.getRawButton(Config.GAMEPAD_driveQuickTurnButton); 
+    driveTrain.controlledDrive(forwardValue, reverseValue, driveTurnAxisId, quickTurn);
+
   }
 
   /**
