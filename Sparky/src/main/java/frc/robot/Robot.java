@@ -9,7 +9,6 @@ package frc.robot;
 
 import javax.swing.JOptionPane;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -31,7 +30,6 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
 
-  public static Joystick driveGamepad = new Joystick(Config.GAMEPAD_driveJoystickId); 
   public static Drivetrain drivetrain = new Drivetrain(); 
 
   Command m_autonomousCommand;
