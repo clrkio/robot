@@ -8,8 +8,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.config.Config;
+import frc.robot.commands.*;
+import frc.robot.commands.Drivetrain.*;
+import frc.robot.commands.CargoIntake.*;
 
 
 /**
@@ -49,8 +53,21 @@ public class OI {
   public OI() {
     driverGamepad = new Joystick(Config.GAMEPAD_driveJoystickId); 
 
-    //Driver Code 
+    //Driver Code Controls 
+    Button limeLightAutoAlignButton = new JoystickButton(driverGamepad, Config.GAMEPAD_driveAutoButton); 
+    Button ledOffButton = new JoystickButton(driverGamepad, Config.GAMEPAD_ledOff); 
+    Button ledOnButton = new JoystickButton(driverGamepad, Config.GAMEPAD_ledOn); 
 
+    limeLightAutoAlignButton.whileHeld(new LimeLightAutoAlignCommand());
+    ledOffButton.whenPressed(new LEDOffCommand());
+    ledOnButton.whenPressed(new LEDOnCommand());
+
+    //Cargo Intake Controls 
+    Button cargoIntakeRollerInButton = new JoystickButton(driverGamepad, Config.GAMEPAD_cargoIntakeRollerIn); 
+    Button cargoIntakeRollerOutButton = new JoystickButton(driverGamepad, Config.GAMEPAD_cargoIntakeRollerOut);
+    
+    cargoIntakeRollerInButton.whileHeld(new RollerInCommand()); 
+    cargoIntakeRollerOutButton.whileHeld(new RollerOutCommand());
   }
 
 }

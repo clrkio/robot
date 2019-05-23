@@ -31,7 +31,7 @@ public class Drivetrain extends Subsystem {
 
   public DifferentialDrive robotDrive;
 
-  public Drivetrain(){ 
+  public Drivetrain() { 
     leftMotorPrimary = new CANSparkMax(Config.CAN_leftDrivePrimary, MotorType.kBrushless);
     leftMotorSlaveA = new CANSparkMax(Config.CAN_leftDriveFollowerA, MotorType.kBrushless);
     leftMotorSlaveB = new CANSparkMax(Config.CAN_leftDriveFollowerB, MotorType.kBrushless);

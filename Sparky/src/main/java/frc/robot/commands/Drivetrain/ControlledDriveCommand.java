@@ -9,6 +9,7 @@ package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.OI;
 import frc.robot.config.Config;
 
 public class ControlledDriveCommand extends Command {
@@ -24,24 +25,29 @@ public class ControlledDriveCommand extends Command {
   @Override
   protected void execute() {
     setSpeed();
+    setQuickTurn();
     setTurn();
+    updateDrivetrain();
   }
 
   protected void setSpeed() {
-    double forwardValue = Robot.driveGamepad.getRawAxis(Config.GAMEPAD_driveForwardAxisId);
-    double reverseValue = Robot.driveGamepad.getRawAxis(Config.GAMEPAD_driveReverseAxisId);
-    
-    speed = forwardValue - reverseValue; 
+    double forwardValue = OI.driverGamepad.getRawAxis(Config.GAMEPAD_driveForwardAxisId);
+    double reverseValue = OI.driverGamepad.getRawAxis(Config.GAMEPAD_driveReverseAxisId);
+
+    speed = (forwardValue - reverseValue)*Config.DRIVE_driveMultiplier; 
+    speed = Math.min(Config.DRIVE_maxSpeed, speed);
+    speed = Math.max(Config.DRIVE_minSpeed, speed);    
   }
 
   protected void setTurn() {
-    double driveTurnAxisId = Robot.driveGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
-    double turnModifer = speed > 0 ? -1 : 1;
-    rotation = turnModifer * driveTurnAxisId;
+    double driveTurnAxisId = OI.driverGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
+    double directionModifer = speed > 0 ? -1 : 1;
+    double turnModifer = quickTurn ? Config.DRIVE_quickTurnMultiplier : Config.DRIVE_turnMultiplier; 
+    rotation = driveTurnAxisId * directionModifer * turnModifer;
   }
 
   protected void setQuickTurn() {
-    quickTurn = Robot.driveGamepad.getRawButton(Config.GAMEPAD_driveQuickTurnButton); 
+    quickTurn = OI.driverGamepad.getRawButton(Config.GAMEPAD_driveQuickTurnButton);
   }
 
   protected void updateDrivetrain() {
