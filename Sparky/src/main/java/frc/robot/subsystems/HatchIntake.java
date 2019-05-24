@@ -7,6 +7,9 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.config.*;
+import frc.robot.commands.HatchIntake.HatchIntakeCommand;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -15,10 +18,24 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class HatchIntake extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
+  public DigitalInput leftSwitch; 
+  public DigitalInput rightSwitch; 
+
+  public HatchIntake() {
+    leftSwitch = new DigitalInput(Config.HATCH_INTAKE_leftSwitchPort);
+    rightSwitch = new DigitalInput(Config.HATCH_INTAKE_rightSwitchPort); 
+  }
+
+  public boolean leftSwitchStatus() {
+    return leftSwitch.get(); 
+  }
+
+  public boolean rightSwitchStatus() {
+    return rightSwitch.get(); 
+  }
 
   @Override
   public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
+    setDefaultCommand(new HatchIntakeCommand());
   }
 }

@@ -15,6 +15,7 @@ import frc.robot.commands.Drivetrain.ControlledDriveCommand;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANEncoder; 
 
 /**
  * Add your docs here.
@@ -29,16 +30,21 @@ public class Drivetrain extends Subsystem {
   private CANSparkMax rightMotorSlaveA;
   private CANSparkMax rightMotorSlaveB;
 
+  private CANEncoder rightEncoder; 
+  private CANEncoder leftEncoder; 
+
   public DifferentialDrive robotDrive;
 
   public Drivetrain() { 
     leftMotorPrimary = new CANSparkMax(Config.CAN_leftDrivePrimary, MotorType.kBrushless);
     leftMotorSlaveA = new CANSparkMax(Config.CAN_leftDriveFollowerA, MotorType.kBrushless);
     leftMotorSlaveB = new CANSparkMax(Config.CAN_leftDriveFollowerB, MotorType.kBrushless);
+    leftEncoder = leftMotorSlaveB.getEncoder(); 
 
     rightMotorPrimary = new CANSparkMax(Config.CAN_rightDrivePrimary, MotorType.kBrushless);
     rightMotorSlaveA = new CANSparkMax(Config.CAN_rightDriveFollowerA, MotorType.kBrushless);
     rightMotorSlaveB = new CANSparkMax(Config.CAN_rightDriveFollowerB, MotorType.kBrushless);
+    rightEncoder = rightMotorSlaveB.getEncoder(); 
 
     leftMotorSlaveA.follow(leftMotorPrimary);
     leftMotorSlaveB.follow(leftMotorPrimary);
@@ -54,6 +60,10 @@ public class Drivetrain extends Subsystem {
 
     robotDrive = new DifferentialDrive(leftMotorPrimary, rightMotorPrimary);
 
+  }
+
+  public double getLeftPosition() {
+    return leftEncoder.getPosition(); 
   }
 
   @Override
