@@ -28,7 +28,6 @@ public class ArmControlCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    
     double speed = OI.driverGamepad.getRawAxis(Config.GAMEPAD_cargoIntakeArmAxisId)*Config.CARGO_INTAKE_armMultiplier;
     if (speed > 0) {
         speed = Math.max(speed, Config.CARGO_INTAKE_maxArmMinSpeed); 

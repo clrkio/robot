@@ -23,18 +23,8 @@ public class RollerInCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.count++; 
-    if (Robot.count == 25) {
-      System.out.println(Robot.cargoIntake.getPhotoeletricValue());
-      Robot.count = 0; 
-    }
-    // check if cargo has been loaded. if it has, turn off the rollers 
-    if (Robot.cargoIntake.getPhotoeletricValue() < 100) {
-      NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(Config.LIMELIGHT_LED_ON); 
-      Robot.cargoIntake.rollerMotor.stopMotor(); 
-    } else {
-      Robot.cargoIntake.rollerMotor.set(Config.CARGO_INTAKE_rollerSpeedIn); 
-    }
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3); 
+    Robot.cargoIntake.rollerMotor.set(Config.CARGO_INTAKE_rollerSpeedIn); 
   }
 
   // Make this return true when this Command no longer needs to run execute()

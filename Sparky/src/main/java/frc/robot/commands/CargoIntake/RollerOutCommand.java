@@ -23,7 +23,7 @@ public class RollerOutCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {   
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(Config.LIMELIGHT_LED_OFF);  
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);  
     Robot.cargoIntake.rollerMotor.set(Config.CARGO_INTAKE_rollerSpeedOut); 
   }
 

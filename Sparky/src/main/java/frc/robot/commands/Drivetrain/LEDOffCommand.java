@@ -8,7 +8,6 @@
 package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.config.Config;
 import edu.wpi.first.networktables.*;
 
 public class LEDOffCommand extends Command {
@@ -18,7 +17,7 @@ public class LEDOffCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(Config.LIMELIGHT_LED_OFF); 
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); 
   }
 
   // Make this return true when this Command no longer needs to run execute()
