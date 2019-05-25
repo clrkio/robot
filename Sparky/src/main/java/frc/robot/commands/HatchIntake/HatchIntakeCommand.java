@@ -5,19 +5,17 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.CargoIntake;
+package frc.robot.commands.HatchIntake;
 
-import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
-import frc.robot.OI;
 import frc.robot.config.Config;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import frc.robot.OI;
+import frc.robot.Robot;
+import edu.wpi.first.networktables.*; 
+import edu.wpi.first.wpilibj.command.Command;
 
-public class ArmControlCommand extends Command {
-  public ArmControlCommand() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
-    requires(Robot.cargoIntake);
+public class HatchIntakeCommand extends Command {
+  public HatchIntakeCommand() {
+    requires(Robot.hatchIntake);
   }
 
   // Called just before this Command runs the first time
@@ -28,18 +26,15 @@ public class ArmControlCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    
-    double speed = OI.driverGamepad.getRawAxis(Config.GAMEPAD_cargoIntakeArmAxisId)*Config.CARGO_INTAKE_armMultiplier;
-    if (speed > 0) {
-        speed = Math.max(speed, Config.CARGO_INTAKE_maxArmMinSpeed); 
-        speed = Math.min(speed, Config.CARGO_INTAKE_maxArmMaxSpeed); 
-    } else {
-        speed = Math.min(speed, -Config.CARGO_INTAKE_maxArmMaxSpeed);
-        speed = Math.max(speed, -Config.CARGO_INTAKE_maxArmMinSpeed); 
+    if (OI.driverGamepad.getPOV() == Config.HATCH_INTAKE_in) {
+      System.out.println(Robot.hatchIntake.leftSwitch.get());
+      if (Robot.hatchIntake.leftSwitchStatus()) {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(Config.LIMELIGHT_LED_ON); 
+      } else {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(Config.LIMELIGHT_LED_OFF); 
+      }
     }
-    Robot.cargoIntake.armMotor.set(speed); 
   }
-
 
   // Make this return true when this Command no longer needs to run execute()
   @Override

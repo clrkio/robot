@@ -1,5 +1,6 @@
 package frc.robot.config;
 
+
 public class Config {
     // GAMEPAD CONFIG
     public static int GAMEPAD_driveJoystickId = 0;
@@ -48,10 +49,23 @@ public class Config {
     // CARGO INTAKE CONFIG 
     public static int CARGO_INTAKE_rollerPort = 0; 
     public static int CARGO_INTAKE_armPort = 1; 
+    public static int CARGO_INTAKE_photoelectricPort = 0; 
     public static double CARGO_INTAKE_rollerSpeedIn = 0.25; 
     public static double CARGO_INTAKE_rollerSpeedOut = -0.25; 
     public static double CARGO_INTAKE_maxArmMinSpeed = 0.1; 
     public static double CARGO_INTAKE_maxArmMaxSpeed = 0.25;
     public static double CARGO_INTAKE_armMultiplier = .25; 
+    public static double CARGO_INTAKE_armUpPosition = 0; 
+    public static double CARGO_INTAKE_armDownPosition = 4; 
+
+    // HATCH INTAKE CONFIG
+    public static int HATCH_INTAKE_leftSwitchPort = 1; 
+    public static int HATCH_INTAKE_rightSwitchPort = 2; 
+    public static int HATCH_INTAKE_in = 90; 
+    public static int HATCH_INTAKE_out = 270; 
+
+    // LIMELIGHT CONFIG
+    public static int LIMELIGHT_LED_ON = 3; 
+    public static int LIMELIGHT_LED_OFF = 1; 
 
 }
