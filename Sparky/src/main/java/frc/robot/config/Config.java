@@ -2,38 +2,26 @@ package frc.robot.config;
 
 
 public class Config {
-    public static final int GAMEPAD_leftXJoyStick = 0; //left joystick x-axis
-    public static final int GAMEPAD_leftYJoyStick = 1; //left joystick y-axis
-    public static final int GAMEPAD_leftTrigger = 2; //left trigger 
-    public static final int GAMEPAD_rightTrigger = 3; //right trigger
-    public static final int GAMEPAD_rightXJoyStick = 4; //right joystick x-axis
-    public static final int GAMEPAD_rightYJoyStick = 5; //right joystick y-axis
-
-    public static final int GAMEPAD_A = 1; //A button 
-    public static final int GAMEPAD_B = 2; //B button 
-    public static final int GAMEPAD_X = 3; //X button 
-    public static final int GAMEPAD_Y = 4; //Y button 
-    public static final int GAMEPAD_LB = 5; //LB button 
-    public static final int GAMEPAD_RB = 6; //RB button 
-    public static final int GAMEPAD_BACK = 7; //Back button 
-    public static final int GAMEPAD_START = 8; //Start button 
-    public static final int GAMEPAD_leftJoyStick = 9; //Press the left joystick 
-    public static final int GAMEPAD_rightJoyStick = 10; //Press the right joystick 
     // GAMEPAD CONFIG
-    public static final int GAMEPAD_driverJoystickId = 0;
-    public static final int GAMEPAD_playerJoystickId = 1; 
+    public static int GAMEPAD_driveJoystickId = 0;
 
-    public static int GAMEPAD_driveTurnAxisId = GAMEPAD_leftXJoyStick; 
-    public static int GAMEPAD_driveReverseAxisId = GAMEPAD_leftTrigger; 
-    public static int GAMEPAD_driveForwardAxisId = GAMEPAD_rightTrigger; 
-    public static int GAMEPAD_driveQuickTurnButton = GAMEPAD_A; 
-    public static int GAMEPAD_driveAutoButton = GAMEPAD_B; 
+    public static int GAMEPAD_driveTurnAxisId = 0; //left joystick x-axis 
+    public static int GAMEPAD_axis1 = 1; //left joystick y-axis
+    public static int GAMEPAD_driveReverseAxisId = 2; //left trigger
+    public static int GAMEPAD_driveForwardAxisId = 3; //right trigger 
+    public static int GAMEPAD_axis4 = 4; //right joystick x-axis 
+    public static int GAMEPAD_cargoIntakeArmAxisId = 5; //right joystick y-axis 
 
-    public static int GAMEPAD_cargoIntakeArmAxisId = GAMEPAD_rightYJoyStick; 
-    public static int GAMEPAD_cargoIntakeRollerIn = GAMEPAD_leftTrigger; 
-    public static int GAMEPAD_cargoIntakeRollerOut = GAMEPAD_rightTrigger; 
-    public static int GAMEPAD_ledOn = GAMEPAD_leftJoyStick; 
-    public static int GAMEPAD_ledOff = GAMEPAD_rightJoyStick;  
+    public static int GAMEPAD_driveQuickTurnButton = 1; //A
+    public static int GAMEPAD_driveAutoButton = 2; //B
+    public static int GAMEPAD_3 = 3; //X
+    public static int GAMEPAD_4 = 4; //Y 
+    public static int GAMEPAD_cargoIntakeRollerIn = 5; //LB 
+    public static int GAMEPAD_cargoIntakeRollerOut = 6; //RB 
+    public static int GAMEPAD_7 = 7; //BACK 
+    public static int GAMEPAD_8 = 8; //START 
+    public static int GAMEPAD_ledOn = 9; //Press the left joystick 
+    public static int GAMEPAD_ledOff = 10; //Press the right joystick 
 
     
     // CAN IDs
@@ -60,23 +48,17 @@ public class Config {
 
     // CARGO INTAKE CONFIG 
     public static int CARGO_INTAKE_rollerPort = 0; 
+    public static int CARGO_INTAKE_armPort = 1; 
     public static int CARGO_INTAKE_photoelectricPort = 0; 
     public static double CARGO_INTAKE_rollerSpeedIn = 0.25; 
     public static double CARGO_INTAKE_rollerSpeedOut = -0.25; 
-
-    // ARM CONFIG
-    public static int ARM_armPort = 1; 
-    public static double ARM_maxArmMinSpeed = 0.1; 
-    public static double ARM_maxArmMaxSpeed = 0.25;
-    public static double ARM_armMultiplier = .25; 
-    public static double ARM_armUpPosition = 10; 
-    public static double ARM_armDownPosition = 0; 
-    public static double ARM_armStop = 0; 
+    public static double CARGO_INTAKE_maxArmMinSpeed = 0.1; 
+    public static double CARGO_INTAKE_maxArmMaxSpeed = 0.25;
+    public static double CARGO_INTAKE_armMultiplier = .25; 
+    public static double CARGO_INTAKE_armUpPosition = 0; 
+    public static double CARGO_INTAKE_armDownPosition = 4; 
 
     // HATCH INTAKE CONFIG
-    public static int HATCH_INTAKE_rollerPort = 2; 
-    public static int HATCH_INTAKE_leftSolenoidPort = 0; 
-    public static int HATCH_INTAKE_rightSolenoidPort = 1; 
     public static int HATCH_INTAKE_leftSwitchPort = 1; 
     public static int HATCH_INTAKE_rightSwitchPort = 2; 
     public static int HATCH_INTAKE_in = 90; 
