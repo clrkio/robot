@@ -49,25 +49,20 @@ public class OI {
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
   public static Joystick driverGamepad; 
+  public static Joystick playerGamepad; 
 
   public OI() {
-    driverGamepad = new Joystick(Config.GAMEPAD_driveJoystickId); 
+    driverGamepad = new Joystick(Config.GAMEPAD_driverJoystickId);
+    playerGamepad = new Joystick(Config.GAMEPAD_playerJoystickId); 
 
     //Driver Code Controls 
     Button limeLightAutoAlignButton = new JoystickButton(driverGamepad, Config.GAMEPAD_driveAutoButton); 
-    Button ledOffButton = new JoystickButton(driverGamepad, Config.GAMEPAD_ledOff); 
-    Button ledOnButton = new JoystickButton(driverGamepad, Config.GAMEPAD_ledOn); 
+    Button ledOffButton = new JoystickButton(playerGamepad, Config.GAMEPAD_ledOff); 
+    Button ledOnButton = new JoystickButton(playerGamepad, Config.GAMEPAD_ledOn); 
 
     limeLightAutoAlignButton.whileHeld(new LimeLightAutoAlignCommand());
     ledOffButton.whenPressed(new LEDOffCommand());
     ledOnButton.whenPressed(new LEDOnCommand());
-
-    //Cargo Intake Controls 
-    Button cargoIntakeRollerInButton = new JoystickButton(driverGamepad, Config.GAMEPAD_cargoIntakeRollerIn); 
-    Button cargoIntakeRollerOutButton = new JoystickButton(driverGamepad, Config.GAMEPAD_cargoIntakeRollerOut);
-    
-    cargoIntakeRollerInButton.whileHeld(new RollerInCommand()); 
-    cargoIntakeRollerOutButton.whileHeld(new RollerOutCommand());
   }
 
 

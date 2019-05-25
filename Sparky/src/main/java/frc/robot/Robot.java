@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.CameraServer;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.config.Config;
 import frc.robot.subsystems.CargoIntake;
+import frc.robot.subsystems.Arm; 
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.HatchIntake;
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
   public static OI m_oi;
 
   public static Drivetrain drivetrain = new Drivetrain(); 
+  public static Arm arm = new Arm(); 
   public static CargoIntake cargoIntake = new CargoIntake(); 
   public static HatchIntake hatchIntake = new HatchIntake(); 
   public static int count = 0; 
