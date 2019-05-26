@@ -14,6 +14,7 @@ import frc.robot.config.Config;
 import frc.robot.commands.*;
 import frc.robot.commands.Drivetrain.*;
 import frc.robot.commands.CargoIntake.*;
+import frc.robot.commands.HatchIntake.*;
 
 
 /**
@@ -59,10 +60,14 @@ public class OI {
     Button limeLightAutoAlignButton = new JoystickButton(driverGamepad, Config.GAMEPAD_driveAutoButton); 
     Button ledOffButton = new JoystickButton(playerGamepad, Config.GAMEPAD_ledOff); 
     Button ledOnButton = new JoystickButton(playerGamepad, Config.GAMEPAD_ledOn); 
+    Button hatchIntakeInButton = new JoystickButton(playerGamepad, Config.GAMEPAD_hatchIntakeIn); 
+    Button hatchIntakeOutButton = new JoystickButton(playerGamepad, Config.GAMEPAD_hatchIntakeOut); 
 
     limeLightAutoAlignButton.whileHeld(new LimeLightAutoAlignCommand());
     ledOffButton.whenPressed(new LEDOffCommand());
     ledOnButton.whenPressed(new LEDOnCommand());
+    //hatchIntakeInButton.whileHeld(new HatchIntakeInCommand());
+    // hatchIntakeOutButton.whileHeld(new HatchIntakeOutCommand());
   }
 
 

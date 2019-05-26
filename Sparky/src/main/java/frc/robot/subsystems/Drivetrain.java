@@ -39,12 +39,12 @@ public class Drivetrain extends Subsystem {
     leftMotorPrimary = new CANSparkMax(Config.CAN_leftDrivePrimary, MotorType.kBrushless);
     leftMotorSlaveA = new CANSparkMax(Config.CAN_leftDriveFollowerA, MotorType.kBrushless);
     leftMotorSlaveB = new CANSparkMax(Config.CAN_leftDriveFollowerB, MotorType.kBrushless);
-    leftEncoder = leftMotorSlaveB.getEncoder(); 
+    leftEncoder = leftMotorPrimary.getEncoder(); 
 
     rightMotorPrimary = new CANSparkMax(Config.CAN_rightDrivePrimary, MotorType.kBrushless);
     rightMotorSlaveA = new CANSparkMax(Config.CAN_rightDriveFollowerA, MotorType.kBrushless);
     rightMotorSlaveB = new CANSparkMax(Config.CAN_rightDriveFollowerB, MotorType.kBrushless);
-    rightEncoder = rightMotorSlaveB.getEncoder(); 
+    rightEncoder = rightMotorPrimary.getEncoder(); 
 
     leftMotorSlaveA.follow(leftMotorPrimary);
     leftMotorSlaveB.follow(leftMotorPrimary);
@@ -60,6 +60,10 @@ public class Drivetrain extends Subsystem {
 
     robotDrive = new DifferentialDrive(leftMotorPrimary, rightMotorPrimary);
 
+  }
+
+  public void stop() {
+    robotDrive.stopMotor(); 
   }
 
   public double getLeftPosition() {

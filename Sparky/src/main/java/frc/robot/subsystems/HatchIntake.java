@@ -27,18 +27,18 @@ public class HatchIntake extends Subsystem {
   public DigitalInput rightSwitch; 
 
   public HatchIntake() {
-    rollerMotor = new WPI_TalonSRX(Config.HATCH_INTAKE_rollerPort); 
+    rollerMotor = new WPI_TalonSRX(Config.CAN_hatchIntake); 
     leftSolenoid = new Solenoid(Config.HATCH_INTAKE_leftSolenoidPort); 
     rightSolenoid = new Solenoid(Config.HATCH_INTAKE_rightSolenoidPort); 
     leftSwitch = new DigitalInput(Config.HATCH_INTAKE_leftSwitchPort);
     rightSwitch = new DigitalInput(Config.HATCH_INTAKE_rightSwitchPort); 
   }
 
-  public boolean leftSwitchStatus() {
+  public boolean getLeftSwitchStatus() {
     return leftSwitch.get(); 
   }
 
-  public boolean rightSwitchStatus() {
+  public boolean getRightSwitchStatus() {
     return rightSwitch.get(); 
   }
 

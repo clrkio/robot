@@ -38,7 +38,6 @@ public class Robot extends TimedRobot {
   public static Arm arm = new Arm(); 
   public static CargoIntake cargoIntake = new CargoIntake(); 
   public static HatchIntake hatchIntake = new HatchIntake(); 
-  public static int count = 0; 
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();

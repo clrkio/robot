@@ -32,6 +32,10 @@ public class Config {
     public static int GAMEPAD_cargoIntakeArmAxisId = GAMEPAD_rightYJoyStick; 
     public static int GAMEPAD_cargoIntakeRollerIn = GAMEPAD_leftTrigger; 
     public static int GAMEPAD_cargoIntakeRollerOut = GAMEPAD_rightTrigger; 
+
+    public static int GAMEPAD_hatchIntakeIn = GAMEPAD_LB; 
+    public static int GAMEPAD_hatchIntakeOut = GAMEPAD_RB; 
+
     public static int GAMEPAD_ledOn = GAMEPAD_leftJoyStick; 
     public static int GAMEPAD_ledOff = GAMEPAD_rightJoyStick;  
 
@@ -44,6 +48,10 @@ public class Config {
     public static int CAN_rightDrivePrimary = 4;
     public static int CAN_rightDriveFollowerA = 5;
     public static int CAN_rightDriveFollowerB = 6;
+
+    //TODO: these are not final 
+    public static int CAN_cargoIntake = 2; 
+    public static int CAN_hatchIntake = 3; 
 
 
     // DRIVE CONFIG
@@ -74,13 +82,12 @@ public class Config {
     public static double ARM_armStop = 0; 
 
     // HATCH INTAKE CONFIG
-    public static int HATCH_INTAKE_rollerPort = 2; 
     public static int HATCH_INTAKE_leftSolenoidPort = 0; 
     public static int HATCH_INTAKE_rightSolenoidPort = 1; 
     public static int HATCH_INTAKE_leftSwitchPort = 1; 
     public static int HATCH_INTAKE_rightSwitchPort = 2; 
-    public static int HATCH_INTAKE_in = 90; 
-    public static int HATCH_INTAKE_out = 270; 
+    public static double HATCH_INTAKE_rollerSpeedIn = -0.25; 
+    public static double HATCH_INTAKE_rollerSpeedOut = 0.4; 
 
     // LIMELIGHT CONFIG
     public static int LIMELIGHT_LED_ON = 3; 

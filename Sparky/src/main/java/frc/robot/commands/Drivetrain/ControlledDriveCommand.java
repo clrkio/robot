@@ -9,6 +9,7 @@ package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.*;
 import frc.robot.Robot;
 import frc.robot.OI;
 import frc.robot.config.Config;
@@ -30,6 +31,7 @@ public class ControlledDriveCommand extends Command {
     setTurn();
     updateDrivetrain();
     SmartDashboard.putNumber("drivetrain left position", Robot.drivetrain.getLeftPosition()); 
+    SmartDashboard.putNumber("ta", NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0));
   }
 
   protected void setSpeed() {

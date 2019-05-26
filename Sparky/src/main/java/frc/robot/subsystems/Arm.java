@@ -27,7 +27,7 @@ public class Arm extends Subsystem {
   // here. Call these from Commands.
   public WPI_TalonSRX armMotor; //right joystick 
 
-  public void ArmIntake() {
+  public Arm() {
     armMotor = new WPI_TalonSRX(Config.ARM_armPort); 
   }
 

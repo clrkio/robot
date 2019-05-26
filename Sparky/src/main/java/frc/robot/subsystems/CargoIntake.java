@@ -12,6 +12,7 @@ import frc.robot.commands.CargoIntake.CargoIntakeCommand;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.NeutralMode; 
 
 /**
  * Add your docs here.
@@ -23,7 +24,8 @@ public class CargoIntake extends Subsystem {
   public AnalogInput photoelectricSensor; 
 
   public CargoIntake() {
-    rollerMotor = new WPI_TalonSRX(Config.CARGO_INTAKE_rollerPort); 
+    rollerMotor = new WPI_TalonSRX(Config.CAN_cargoIntake); 
+    rollerMotor.setNeutralMode(NeutralMode.Brake); 
     photoelectricSensor = new AnalogInput(Config.CARGO_INTAKE_photoelectricPort); 
   } 
 

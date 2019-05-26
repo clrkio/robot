@@ -9,6 +9,7 @@
 package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 import frc.robot.Robot;
 import frc.robot.config.*;
@@ -25,35 +26,43 @@ public class LimeLightAutoAlignCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    if (!validTarget()) {
+      Robot.drivetrain.stop(); 
+      return; 
+    }
     setLedOn();
     setValues();
     updateDrivetrain();
   }
 
-  private void setValues() {
-    final double STEER_K = -0.1; // how hard to turn toward the target
-    final double DRIVE_K = 0.26; // how hard to drive fwd toward the target
-    final double DESIRED_TARGET_AREA = 13; // Area of the target when the robot reaches the wall
-
+  private boolean validTarget() {
     double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-    System.out.println(tv);
-    if (tv != 1.0) {
-      return;
-    }  
+    SmartDashboard.putNumber("tv", tv);
+    return tv == 1.0; 
+  }
 
+  private void setValues() {
+    final double STEER_K = -0.05; // how hard to turn toward the target
+    final double DRIVE_K = 0.20; // how hard to drive fwd toward the target
+    final double DESIRED_TARGET_AREA = 35; // Area of the target when the robot reaches the wall
+
+    //horizontal offset 
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    // double ty =
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    //vertical offset 
+    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    //target area 0%-100%
     double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+    //skew
     double ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
     //System.out.println("tv: " + tv + " tx: " + tx + " ta: " + ta + " ts: " + ts);
 
+    double distance = DESIRED_TARGET_AREA - ta; 
     // Start with proportional steering
-    rotation = tx * STEER_K * Config.DRIVE_autoDriveMultiplier;
+    rotation = distance * tx * STEER_K * Config.DRIVE_autoDriveMultiplier;
 
     // try to drive forward until the target area reaches our desired area
     System.out.println("ta: " + ta); 
-    speed = (DESIRED_TARGET_AREA - ta) * DRIVE_K * Config.DRIVE_autoDriveMultiplier;
+    speed = distance * DRIVE_K * Config.DRIVE_autoDriveMultiplier;
 
     // don't let the robot drive too fast into the goal
     speed = Math.min(speed, Config.DRIVE_autoMaxSpeed);
