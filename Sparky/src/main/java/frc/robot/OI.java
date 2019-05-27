@@ -66,8 +66,8 @@ public class OI {
     limeLightAutoAlignButton.whileHeld(new LimeLightAutoAlignCommand());
     ledOffButton.whenPressed(new LEDOffCommand());
     ledOnButton.whenPressed(new LEDOnCommand());
-    //hatchIntakeInButton.whileHeld(new HatchIntakeInCommand());
-    // hatchIntakeOutButton.whileHeld(new HatchIntakeOutCommand());
+    hatchIntakeInButton.whileHeld(new HatchIntakeInCommand());
+    hatchIntakeOutButton.whileHeld(new HatchIntakeOutCommand());
   }
 
 

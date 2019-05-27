@@ -26,8 +26,8 @@ public class ControlledDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    setSpeed();
     setQuickTurn();
+    setSpeed();
     setTurn();
     updateDrivetrain();
     SmartDashboard.putNumber("drivetrain left position", Robot.drivetrain.getLeftPosition()); 
@@ -41,6 +41,9 @@ public class ControlledDriveCommand extends Command {
     speed = (forwardValue - reverseValue)*Config.DRIVE_driveMultiplier; 
     speed = Math.min(Config.DRIVE_maxSpeed, speed);
     speed = Math.max(Config.DRIVE_minSpeed, speed);    
+    if (quickTurn) {
+      speed *= Config.DRIVE_quickTurnSpeedMultiplier; 
+    }
   }
 
   protected void setTurn() {

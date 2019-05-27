@@ -33,6 +33,10 @@ public class CargoIntake extends Subsystem {
     return photoelectricSensor.getValue(); 
   }
 
+  public double getRollerPosition() {
+    return rollerMotor.getSensorCollection().getQuadraturePosition(); 
+  }
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.

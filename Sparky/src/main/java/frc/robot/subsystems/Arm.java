@@ -17,15 +17,11 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-
-
 /**
  * Add your docs here.
  */
 public class Arm extends Subsystem {
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
-  public WPI_TalonSRX armMotor; //right joystick 
+    public WPI_TalonSRX armMotor; //right joystick 
 
   public Arm() {
     armMotor = new WPI_TalonSRX(Config.ARM_armPort); 

@@ -16,12 +16,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.*;
 
+enum Direction {
+  STOP, IN, OUT 
+}
+
 public class CargoIntakeCommand extends Command {
   private double speed; 
   private double startTime; 
+  private Direction direction; 
   public CargoIntakeCommand() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
     requires(Robot.cargoIntake);
   }
 
@@ -37,21 +40,43 @@ public class CargoIntakeCommand extends Command {
   protected void execute() {
     SmartDashboard.putNumber("photoelelectricValue", Robot.cargoIntake.getPhotoeletricValue()); 
     if (isStalling()) {
+      direction = Direction.STOP; 
       speed = 0; 
       Robot.cargoIntake.rollerMotor.stopMotor(); 
-      return; 
-    }
-    // check if cargo has been loaded. if it has, turn off the rollers 
-    if (Robot.cargoIntake.getPhotoeletricValue() < 100) {
-      speed = 0; 
-      Robot.cargoIntake.rollerMotor.stopMotor(); 
+      SmartDashboard.putString("cargoIntakeStatus: ", "Rollers Stalling");
     } else {
-      speed = OI.playerGamepad.getRawAxis(Config.GAMEPAD_cargoIntakeRollerIn); 
-      if (speed < .01) {
-        speed = -OI.playerGamepad.getRawAxis(Config.GAMEPAD_cargoIntakeRollerOut); 
-      } 
+      direction = Direction.IN; 
+      speed = OI.playerGamepad.getRawAxis(Config.GAMEPAD_cargoIntakeRollerIn)*Config.CARGO_INTAKE_rollerSpeedInMultiplier;  
+      if (speed == 0) {
+        direction = Direction.OUT; 
+        speed = OI.playerGamepad.getRawAxis(Config.GAMEPAD_cargoIntakeRollerOut)*Config.CARGO_INTAKE_rollerSpeedOutMultiplier; 
+        SmartDashboard.putString("cargoIntakeStatus: ", "Cargo Out Normally"); 
+      } if (speed > 0 && Robot.cargoIntake.getPhotoeletricValue() < Config.CARGO_INTAKE_photoelectricThreshold) {
+        // check if cargo has been loaded. if it has, do not let the rollers intake any further 
+        direction = Direction.STOP; 
+        speed = 0; 
+        Robot.cargoIntake.rollerMotor.stopMotor(); 
+        SmartDashboard.putString("cargoIntakeStatus: ", "Photoelectric Triggered"); 
+      } else if (speed > 0) {
+        SmartDashboard.putString("cargoIntakeStatus: ", "Cargo In Normally");
+      }
       SmartDashboard.putNumber("cargoIntakeRollerSpeed", speed); 
+      SmartDashboard.putString("cargoIntakeRollerDirection", directionToString(direction));
+      SmartDashboard.putNumber("cargoIntakePosition", Robot.cargoIntake.getRollerPosition()); 
       Robot.cargoIntake.rollerMotor.set(speed); 
+    }
+  }
+
+  private String directionToString(Direction direction) {
+    switch (direction) {
+      case STOP: 
+        return "STOP"; 
+      case IN: 
+        return "IN"; 
+      case OUT:
+        return "OUT"; 
+      default:
+        return "UNKNOWN"; 
     }
   }
 

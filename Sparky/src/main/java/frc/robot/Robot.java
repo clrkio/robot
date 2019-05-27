@@ -17,11 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.CameraServer;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.config.Config;
-import frc.robot.subsystems.CargoIntake;
-import frc.robot.subsystems.Arm; 
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.HatchIntake;
+import frc.robot.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,6 +34,7 @@ public class Robot extends TimedRobot {
   public static Arm arm = new Arm(); 
   public static CargoIntake cargoIntake = new CargoIntake(); 
   public static HatchIntake hatchIntake = new HatchIntake(); 
+  public static Elevator elevator = new Elevator(); 
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();

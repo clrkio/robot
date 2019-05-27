@@ -36,10 +36,11 @@ public class Config {
     public static int GAMEPAD_hatchIntakeIn = GAMEPAD_LB; 
     public static int GAMEPAD_hatchIntakeOut = GAMEPAD_RB; 
 
+    public static int GAMEPAD_elevatorAxisId = GAMEPAD_leftYJoyStick; 
+
     public static int GAMEPAD_ledOn = GAMEPAD_leftJoyStick; 
     public static int GAMEPAD_ledOff = GAMEPAD_rightJoyStick;  
 
-    
     // CAN IDs
     public static int CAN_leftDrivePrimary = 1;
     public static int CAN_leftDriveFollowerA = 2;
@@ -50,9 +51,10 @@ public class Config {
     public static int CAN_rightDriveFollowerB = 6;
 
     //TODO: these are not final 
-    public static int CAN_cargoIntake = 2; 
-    public static int CAN_hatchIntake = 3; 
-
+    public static int CAN_elevatorLeft = 11; 
+    public static int CAN_elevatorRight = 12; 
+    public static int CAN_cargoIntake = 14; //this is not wired
+    public static int CAN_hatchIntake = 15; //this is not wired 
 
     // DRIVE CONFIG
     public static boolean DRIVE_rightIsInverted = false;
@@ -61,6 +63,7 @@ public class Config {
     public static double DRIVE_driveMultiplier = .25; 
     public static double DRIVE_turnMultiplier = .75; 
     public static double DRIVE_quickTurnMultiplier = -.25; 
+    public static double DRIVE_quickTurnSpeedMultiplier = .5; 
     public static double DRIVE_autoDriveMultiplier = .1; 
     public static double DRIVE_autoTurnMultiplier = 1;
     public static double DRIVE_autoMaxSpeed = .15; 
@@ -69,8 +72,9 @@ public class Config {
     // CARGO INTAKE CONFIG 
     public static int CARGO_INTAKE_rollerPort = 0; 
     public static int CARGO_INTAKE_photoelectricPort = 0; 
-    public static double CARGO_INTAKE_rollerSpeedIn = 0.25; 
-    public static double CARGO_INTAKE_rollerSpeedOut = -0.25; 
+    public static double CARGO_INTAKE_photoelectricThreshold = 10; 
+    public static double CARGO_INTAKE_rollerSpeedInMultiplier = 0.80; 
+    public static double CARGO_INTAKE_rollerSpeedOutMultiplier = -0.80; 
 
     // ARM CONFIG
     public static int ARM_armPort = 1; 
@@ -88,6 +92,9 @@ public class Config {
     public static int HATCH_INTAKE_rightSwitchPort = 2; 
     public static double HATCH_INTAKE_rollerSpeedIn = -0.25; 
     public static double HATCH_INTAKE_rollerSpeedOut = 0.4; 
+
+    // ELEVATOR CONFIG 
+    public static double ELEVATOR_speedMultiplier = .75; 
 
     // LIMELIGHT CONFIG
     public static int LIMELIGHT_LED_ON = 3; 
