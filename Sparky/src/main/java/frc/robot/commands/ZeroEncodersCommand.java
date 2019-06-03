@@ -5,31 +5,28 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.HatchIntake;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class HatchIntakeInCommand extends Command {
-  public HatchIntakeInCommand() {
+public class ZeroEncodersCommand extends Command {
+  public ZeroEncodersCommand() {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.hatchIntake);
+    requires(Robot.wrist);
+    requires(Robot.elevator);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.hatchIntake.feedIn();
+    Robot.wrist.zeroEncoder();
+    Robot.elevator.zeroEncoder();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
     return true;
-  }
-
-  @Override
-  protected void interrupted() {
-    Robot.hatchIntake.stop();
   }
 }

@@ -5,31 +5,27 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.HatchIntake;
+package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class HatchIntakeInCommand extends Command {
-  public HatchIntakeInCommand() {
+public class LowSpeedShiftCommand extends Command {
+  public LowSpeedShiftCommand() {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.hatchIntake);
+    // eg. requires(chassis);
+    requires(Robot.drivetrain);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.hatchIntake.feedIn();
+    Robot.drivetrain.shift(false);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
     return true;
-  }
-
-  @Override
-  protected void interrupted() {
-    Robot.hatchIntake.stop();
   }
 }

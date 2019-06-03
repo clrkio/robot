@@ -8,14 +8,14 @@
 package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.networktables.*;
+import frc.robot.IO;
+import frc.robot.Logger;
 import frc.robot.Robot;
-import frc.robot.OI;
 import frc.robot.config.Config;
 
 public class ControlledDriveCommand extends Command {
-  protected double speed; 
+  private static Logger logger = new Logger(ControlledDriveCommand.class.getSimpleName());
+  protected double speed;
   protected double rotation; 
   protected boolean quickTurn = true; 
 
@@ -30,13 +30,11 @@ public class ControlledDriveCommand extends Command {
     setSpeed();
     setTurn();
     updateDrivetrain();
-    SmartDashboard.putNumber("drivetrain left position", Robot.drivetrain.getLeftPosition()); 
-    SmartDashboard.putNumber("ta", NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0));
   }
 
   protected void setSpeed() {
-    double forwardValue = OI.driverGamepad.getRawAxis(Config.GAMEPAD_driveForwardAxisId);
-    double reverseValue = OI.driverGamepad.getRawAxis(Config.GAMEPAD_driveReverseAxisId);
+    double forwardValue = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveForwardAxisId);
+    double reverseValue = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveReverseAxisId);
 
     speed = (forwardValue - reverseValue)*Config.DRIVE_driveMultiplier; 
     speed = Math.min(Config.DRIVE_maxSpeed, speed);
@@ -47,18 +45,19 @@ public class ControlledDriveCommand extends Command {
   }
 
   protected void setTurn() {
-    double driveTurnAxisId = OI.driverGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
+    double driveTurnAxisId = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
     double directionModifer = speed > 0 ? -1 : 1;
     double turnModifer = quickTurn ? Config.DRIVE_quickTurnMultiplier : Config.DRIVE_turnMultiplier; 
     rotation = driveTurnAxisId * directionModifer * turnModifer;
   }
 
   protected void setQuickTurn() {
-    quickTurn = OI.driverGamepad.getRawButton(Config.GAMEPAD_driveQuickTurnButton);
+    quickTurn = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveQuickTurnButton);
   }
 
   protected void updateDrivetrain() {
-    Robot.drivetrain.robotDrive.curvatureDrive(speed, rotation, quickTurn);
+    // Robot.drivetrain.set(speed, rotation, quickTurn);
+    Robot.drivetrain.set(0, 0, false);
   }
 
   // Make this return true when this Command no longer needs to run execute()

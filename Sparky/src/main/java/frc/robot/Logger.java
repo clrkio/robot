@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
@@ -5,20 +6,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems;
-
-import edu.wpi.first.wpilibj.command.Subsystem;
+package frc.robot;
 
 /**
- * An example subsystem.  You can replace me with your own Subsystem.
+ * 
  */
-public class ExampleSubsystem extends Subsystem {
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
+public class Logger {
+    private String logPrefix;
 
-  @Override
-  public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
+    public Logger(String _logPrefix) {
+        logPrefix = _logPrefix;
+    }
+
+    public void log(String logString) {
+        System.out.println(String.format("%s: %s", logPrefix, logString));
+    }
 }

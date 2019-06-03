@@ -5,31 +5,31 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.HatchIntake;
+package frc.robot.commands.Wrist;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.IO;
 import frc.robot.Robot;
+import frc.robot.config.Config;
 
-public class HatchIntakeInCommand extends Command {
-  public HatchIntakeInCommand() {
+public class WristControlCommand extends Command {
+  public WristControlCommand() {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.hatchIntake);
+    requires(Robot.wrist);
   }
+
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.hatchIntake.feedIn();
+    double speed = IO.playerGamepad.getRawAxis(Config.GAMEPAD_wristAxisId) * Config.WRIST_speedMultiplier;
+    Robot.wrist.move(speed);
   }
+
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
-  }
-
-  @Override
-  protected void interrupted() {
-    Robot.hatchIntake.stop();
+    return false;
   }
 }

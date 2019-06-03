@@ -7,16 +7,18 @@
 
 package frc.robot;
 
-import javax.swing.JOptionPane;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.CameraServer;
-import frc.robot.commands.ExampleCommand;
+import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.config.Config;
+import frc.robot.impls.SmartDashboardSubsystem;
 import frc.robot.subsystems.*;
 
 /**
@@ -27,17 +29,30 @@ import frc.robot.subsystems.*;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
-  public static OI m_oi;
+  private static Logger logger = new Logger(Robot.class.getSimpleName());
+
+  public static IO m_oi;
 
   public static Drivetrain drivetrain = new Drivetrain(); 
-  public static Arm arm = new Arm(); 
+  public static Wrist wrist = new Wrist(); 
   public static CargoIntake cargoIntake = new CargoIntake(); 
   public static HatchIntake hatchIntake = new HatchIntake(); 
   public static Elevator elevator = new Elevator(); 
 
-  Command m_autonomousCommand;
+  Command m_autonomousCommand = null;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+
+  private Preferences prefs;
+
+  private SmartDashboardSubsystem[] subsystems =
+    {drivetrain, wrist, cargoIntake, hatchIntake, elevator};
+
+  private void logSmartDashboard() {
+    for (SmartDashboardSubsystem s : subsystems) {
+      s.logSmartDashboard();
+    }
+  }
+  
 
   /**
    * This function is run when the robot is first started up and should be
@@ -45,10 +60,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_oi = new OI();
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    logger.log("robotInit");
+    prefs = Preferences.getInstance();
+
+    Config.updateConfig(prefs);
+    m_oi = new IO();
+    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
+    // SmartDashboard.putData("Auto mode", m_chooser);
     CameraServer.getInstance().startAutomaticCapture(); 
   }
 
@@ -62,6 +81,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    logSmartDashboard();
   }
 
   /**
@@ -71,6 +91,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    logger.log("disabledInit");
   }
 
   @Override
@@ -78,19 +99,23 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
   }
 
+  
   /**
    * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString code to get the auto name from the text box below the Gyro
+   * between different autonomous modes using the dashboard. The sendable chooser
+   * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
+   * remove all of the chooser code and uncomment the getString code to get the
+   * auto name from the text box below the Gyro
    *
-   * <p>You can add additional auto modes by adding additional commands to the
-   * chooser code above (like the commented example) or additional comparisons
-   * to the switch structure below with additional strings & commands.
+   * <p>
+   * You can add additional auto modes by adding additional commands to the
+   * chooser code above (like the commented example) or additional comparisons to
+   * the switch structure below with additional strings & commands.
    */
   @Override
   public void autonomousInit() {
+    logger.log("autonomousInit");
+    Config.updateConfig(prefs);
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -116,10 +141,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    logger.log("teleopInit");
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    Config.updateConfig(prefs);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

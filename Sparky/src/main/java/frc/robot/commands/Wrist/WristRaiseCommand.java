@@ -5,31 +5,30 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.HatchIntake;
+package frc.robot.commands.Wrist;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Logger;
 import frc.robot.Robot;
 
-public class HatchIntakeInCommand extends Command {
-  public HatchIntakeInCommand() {
+public class WristRaiseCommand extends Command {
+  private static Logger logger = new Logger(WristRaiseCommand.class.getSimpleName());
+
+  public WristRaiseCommand() {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.hatchIntake);
+    requires(Robot.wrist);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.hatchIntake.feedIn();
+    logger.log("Raised");
+    Robot.wrist.raise();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
     return true;
-  }
-
-  @Override
-  protected void interrupted() {
-    Robot.hatchIntake.stop();
   }
 }

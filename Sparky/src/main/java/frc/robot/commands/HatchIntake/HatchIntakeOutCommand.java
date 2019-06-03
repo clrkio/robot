@@ -20,8 +20,7 @@ public class HatchIntakeOutCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.hatchIntake.rollerMotor.set(Config.HATCH_INTAKE_rollerSpeedOut); 
-    
+    Robot.hatchIntake.feedOut();
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -30,8 +29,8 @@ public class HatchIntakeOutCommand extends Command {
     return true;
   }
 
-  // Called once after isFinished returns true
   @Override
-  protected void end() {
+  protected void interrupted() {
+    Robot.hatchIntake.stop();
   }
 }

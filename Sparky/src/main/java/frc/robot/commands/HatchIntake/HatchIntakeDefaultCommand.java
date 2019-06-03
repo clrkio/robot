@@ -10,26 +10,20 @@ package frc.robot.commands.HatchIntake;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class HatchIntakeInCommand extends Command {
-  public HatchIntakeInCommand() {
-    // Use requires() here to declare subsystem dependencies
+public class HatchIntakeDefaultCommand extends Command {
+  public HatchIntakeDefaultCommand() {
     requires(Robot.hatchIntake);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.hatchIntake.feedIn();
+    Robot.hatchIntake.stop();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
-  }
-
-  @Override
-  protected void interrupted() {
-    Robot.hatchIntake.stop();
+    return false;
   }
 }

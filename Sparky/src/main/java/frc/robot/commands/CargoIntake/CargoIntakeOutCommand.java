@@ -5,33 +5,29 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.HatchIntake;
+package frc.robot.commands.CargoIntake;
 
-import frc.robot.config.Config;
-import frc.robot.OI;
-import frc.robot.Robot;
-import edu.wpi.first.networktables.*; 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Logger;
+import frc.robot.Robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+public class CargoIntakeOutCommand extends Command {
+  private static Logger logger = new Logger(CargoIntakeOutCommand.class.getSimpleName());
 
-public class HatchIntakeCommand extends Command {
-  public HatchIntakeCommand() {
-    requires(Robot.hatchIntake);
+  public CargoIntakeOutCommand() {
+    // Use requires() here to declare subsystem dependencies
+    requires(Robot.cargoIntake);
   }
-
+  
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.hatchIntake.rollerMotor.stopMotor(); 
-    SmartDashboard.putBoolean("leftSwitch", Robot.hatchIntake.getLeftSwitchStatus()); 
-    SmartDashboard.putBoolean("rightSwitch", Robot.hatchIntake.getRightSwitchStatus()); 
+    Robot.cargoIntake.activateRollerOut();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 }

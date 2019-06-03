@@ -8,15 +8,11 @@
 package frc.robot.commands.Elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Elevator;
-import frc.robot.OI;
+import frc.robot.IO;
 import frc.robot.Robot;
 import frc.robot.config.Config;
 
 public class ElevatorControlCommand extends Command {
-  private double speed; 
-
   public ElevatorControlCommand() {
     requires(Robot.elevator);
   }
@@ -24,15 +20,13 @@ public class ElevatorControlCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    setSpeed(); 
-    Robot.elevator.move(speed); 
-    SmartDashboard.putNumber("elevatorRawPosition", Robot.elevator.getElevatorRawPosition()); 
+    double speed = IO.playerGamepad.getRawAxis(Config.GAMEPAD_elevatorAxisId); 
+    speed *= Config.ELEVATOR_speedMultiplier;
+    Robot.elevator.move(speed);
   }
 
   protected void setSpeed() {
-    speed = OI.playerGamepad.getRawAxis(Config.GAMEPAD_elevatorAxisId); 
-    speed *= Config.ELEVATOR_speedMultiplier; 
-    SmartDashboard.putNumber("elevatorSpeed", speed); 
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
