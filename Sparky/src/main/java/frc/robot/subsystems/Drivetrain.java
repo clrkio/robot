@@ -143,11 +143,11 @@ public class Drivetrain extends SmartDashboardSubsystem {
 
     IdleMode toSet = isBrakeMode ? IdleMode.kBrake : IdleMode.kCoast;
     leftMotorPrimary.setIdleMode(toSet);
-    leftMotorSlaveA.setIdleMode(toSet);
-    leftMotorSlaveB.setIdleMode(toSet);
+    // leftMotorSlaveA.setIdleMode(toSet);
+    // leftMotorSlaveB.setIdleMode(toSet);
     rightMotorPrimary.setIdleMode(toSet);
-    rightMotorSlaveA.setIdleMode(toSet);
-    rightMotorSlaveB.setIdleMode(toSet);
+    // rightMotorSlaveA.setIdleMode(toSet);
+    // rightMotorSlaveB.setIdleMode(toSet);
   }
 
   @Override
@@ -163,5 +163,6 @@ public class Drivetrain extends SmartDashboardSubsystem {
     SmartDashboard.putNumber("Drivetrain turn", setRotation);
     SmartDashboard.putBoolean("Drivetrain quickturn", setQuickturn);
     SmartDashboard.putString("Drivetrain idleMode", isBrakeMode() ? "BRAKE" : "COAST");
+    SmartDashboard.putString("Drivetrain speedMode", isHighSpeed() ? "HIGH" : "LOW");
   }
 }

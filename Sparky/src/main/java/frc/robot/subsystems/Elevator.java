@@ -123,29 +123,22 @@ public class Elevator extends SmartDashboardSubsystem {
   public void move(double speed) {
     if (Math.abs(speed) > 0.05) {
       targetState = States.MANUAL;
+      setSpeed = speed;
     }
-    else {
-      speed = 0;
+    else if (targetState != States.MANUAL) {
+      setSpeed = getAutoSpeed();
     }
-    setSpeed = speed;
 
-    autoMove();
-    double position = getPosition(); 
-    if ((position < getStateTargetPosition(States.CARGO_LOAD)) && setSpeed < 0) {
+    if (setSpeed > 0 && isTopSwitchHit()) {
       setSpeed = 0;
-      logger.log("Too low");
+      logger.log("Hit top limit switch!");
     }
-    if ((position > getStateTargetPosition(States.HATCH_HIGH)) && setSpeed > 0) {
-      setSpeed = 0;
-      logger.log("Too high");
+    else if (setSpeed < 0 && isBottomSwitchHit()) {
+      setSpeed = Config.ELEVATOR_holdSpeed;
+      logger.log("Hit bottom limit switch!");
     }
-    // if (setSpeed > 0 && isTopSwitchHit()) {
-    //   setSpeed = 0;
-    // }
-    // else if (setSpeed < 0 && isBottomSwitchHit()) {
-    //   setSpeed = 0;
-    // }
-    // Pretty sure code goes here for actually moving
+
+    // Actually set the speed
     elevatorMasterMotor.set(setSpeed);
   }
 
@@ -161,7 +154,7 @@ public class Elevator extends SmartDashboardSubsystem {
     return elevatorMasterMotor.getSelectedSensorPosition(); 
   }
 
-  private void autoMove() {
+  private double getAutoSpeed() {
     double currPosition = getPosition();
     double targetPosition = getTargetPosition();
 
@@ -177,7 +170,7 @@ public class Elevator extends SmartDashboardSubsystem {
       driveDown();
     }
 
-    setSpeed = autoSpeed;
+    return autoSpeed;
   }
 
   private void driveUp() {

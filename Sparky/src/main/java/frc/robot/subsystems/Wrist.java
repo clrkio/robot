@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Logger;
 import frc.robot.commands.Wrist.WristControlCommand;
@@ -60,11 +61,14 @@ public class Wrist extends SmartDashboardSubsystem {
   private double autoSpeed;
   private States targetState;
   private Direction direction;
+  private DigitalInput upLimitSwitch;
   
   public Wrist() {
     setupStateData();
     wristMotor = new WPI_TalonSRX(Config.CAN_wrist);
     wristMotor.setNeutralMode(NeutralMode.Brake);
+
+    upLimitSwitch = new DigitalInput(Config.WRIST_backstopDIO);
 
     targetState = States.MANUAL;
     direction = Direction.HOLD;
@@ -102,29 +106,28 @@ public class Wrist extends SmartDashboardSubsystem {
   }
 
   public void move(double speed) {
-    double position = getWristPosition(); 
-    setSpeed = speed;
     if (Math.abs(speed) > 0.05) {
       targetState = States.MANUAL;
+      setSpeed = speed;
+    } else if (targetState != States.MANUAL) {
+      setSpeed = getAutoSpeed();
     }
 
-    autoMove();
-    if ((position < Config.WRIST_positionUp && setSpeed > 0)) {
+    double position = getWristPosition(); 
+    if (isUpLimitHit() && setSpeed > 0) {
       setSpeed = 0;
       logger.log("Too high");
     }
+
     if (position > Config.WRIST_positionLoad && setSpeed < 0) {
-      setSpeed = 0;
+      setSpeed = Config.WRIST_holdSpeedLoad;
       logger.log("Too low");
     }
+
     wristMotor.set(setSpeed);
   }
 
-  private void autoMove() {
-    if (targetState == States.MANUAL) {
-      return;
-    }
-
+  private double getAutoSpeed() {
     double currPosition = getWristPosition();
     double targetPosition = getTargetPosition();
 
@@ -140,7 +143,7 @@ public class Wrist extends SmartDashboardSubsystem {
       driveUp();
     }
 
-    setSpeed = autoSpeed;
+    return autoSpeed;
   }
 
   private void driveUp() {
@@ -174,6 +177,10 @@ public class Wrist extends SmartDashboardSubsystem {
     targetState = nextState;
   }
 
+  public boolean isUpLimitHit() {
+    return !upLimitSwitch.get();
+  }
+
   private double getTargetPosition() {
     return stateData.get(targetState).targetPosition;
   }
@@ -186,6 +193,7 @@ public class Wrist extends SmartDashboardSubsystem {
     SmartDashboard.putString("Wrist Motor Direction", direction.toString());
     SmartDashboard.putNumber("Wrist Raw Position", getWristPosition());
     SmartDashboard.putNumber("Wrist Target Position", getTargetPosition());
+    SmartDashboard.putBoolean("Wrist Up Limit Hit", isUpLimitHit());
   }
 
   @Override

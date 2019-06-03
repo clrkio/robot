@@ -77,27 +77,24 @@ public class Config {
     public static final int CAN_rightDriveFollowerA = 2;
     public static final int CAN_rightDriveFollowerB = 3;
 
-    //TODO: these are not final 
     public static final int CAN_elevatorLeft = 12; 
     public static final int CAN_elevatorRight = 11; 
-    public static final int CAN_cargoIntake = 7; //this is not wired
-    public static final int CAN_hatchIntake = 14; //this is not wired
-    public static final int CAN_wrist = 15; //this is not wired
+    public static final int CAN_cargoIntake = 7;
+    public static final int CAN_hatchIntake = 14;
+    public static final int CAN_wrist = 15;
     
 
     // SOLENOID IDs
     public static final int SOLENOID_driveLowSpeed = 6;
     public static final int SOLENOID_driveHighSpeed = 7;
-    public static final int SOLENOID_hatchRetract = 0;
-    public static final int SOLENOID_hatchExtend = 1;
+    public static final int SOLENOID_hatchRetract = 1;
+    public static final int SOLENOID_hatchExtend = 0;
 
     // DRIVE CONFIG
     public static boolean DRIVE_disableNeoInHighSpeed = false;
     public static boolean DRIVE_startInHighSpeed = false; 
     public static boolean DRIVE_startInBrakeMode = false;
-    public static double DRIVE_maxSpeed = .25;
-    public static double DRIVE_minSpeed = -.25;
-    public static double DRIVE_driveMultiplier = .3; 
+    public static double DRIVE_driveMultiplier = .5; 
     public static double DRIVE_turnMultiplier = .5; 
     public static double DRIVE_quickTurnMultiplier = -.25; 
     public static double DRIVE_quickTurnSpeedMultiplier = .1; 
@@ -114,6 +111,8 @@ public class Config {
     public static double CARGO_INTAKE_holdSpeed = 0.15; 
 
     // WRIST CONFIG
+    public final static int WRIST_backstopDIO = 7;
+
     public static double WRIST_lowerSpeed = -0.1; 
     public static double WRIST_raiseSpeed = 0.2;
     public static double WRIST_holdSpeedUp = 0;
@@ -122,7 +121,6 @@ public class Config {
     public static double WRIST_holdSpeedLoad = 0.05;
     public static double WRIST_speedMultiplier = -.25;
 
-    // TODO: Adjust
     public static double WRIST_positionUp = 0;
     public static double WRIST_positionCargo = 1000;
     public static double WRIST_positionFlat = 2500;
@@ -137,7 +135,7 @@ public class Config {
     public static double HATCH_INTAKE_rollerSpeedHold = 0.1;
 
     // ELEVATOR CONFIG 
-    public static final int ELEVATOR_bottomSwitchDIO = 3; 
+    public static final int ELEVATOR_bottomSwitchDIO = 5; 
     public static final int ELEVATOR_topSwitchDIO = 4; 
 
     public static double ELEVATOR_speedMultiplier = -.5;
@@ -148,15 +146,15 @@ public class Config {
     public static double ELEVATOR_heightCargoRocketLow = 2;
     public static double ELEVATOR_heightCargoRocketMid = 30;
     public static double ELEVATOR_heightCargoRocketHigh = 58;
-    public static double ELEVATOR_heightHatchLow = 15;
-    public static double ELEVATOR_heightHatchMid = 43;
-    public static double ELEVATOR_heightHatchHigh = 68;
+    public static double ELEVATOR_heightHatchLow = 13.5;
+    public static double ELEVATOR_heightHatchMid = 41.5;
+    public static double ELEVATOR_heightHatchHigh = 66.5;
     public static double ELEVATOR_heightMax = 68;
 
-    public static double ELEVATOR_acceptableError = 100;
-    public static double ELEVATOR_upSpeed = 0.25;
+    public static double ELEVATOR_acceptableError = 200;
+    public static double ELEVATOR_upSpeed = 0.4;
     public static double ELEVATOR_downSpeed = -0.2;
-    public static double ELEVATOR_holdSpeed = 0;
+    public static double ELEVATOR_holdSpeed = 0.08;
 
     // LIMELIGHT CONFIG
     public static final int LIMELIGHT_LED_ON = 3; 

@@ -36,9 +36,7 @@ public class ControlledDriveCommand extends Command {
     double forwardValue = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveForwardAxisId);
     double reverseValue = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveReverseAxisId);
 
-    speed = (forwardValue - reverseValue)*Config.DRIVE_driveMultiplier; 
-    speed = Math.min(Config.DRIVE_maxSpeed, speed);
-    speed = Math.max(Config.DRIVE_minSpeed, speed);    
+    speed = (forwardValue - reverseValue)*Config.DRIVE_driveMultiplier;
     if (quickTurn) {
       speed *= Config.DRIVE_quickTurnSpeedMultiplier; 
     }
@@ -46,7 +44,7 @@ public class ControlledDriveCommand extends Command {
 
   protected void setTurn() {
     double driveTurnAxisId = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
-    double directionModifer = speed > 0 ? -1 : 1;
+    double directionModifer = (!quickTurn && speed > 0) ? -1 : 1;
     double turnModifer = quickTurn ? Config.DRIVE_quickTurnMultiplier : Config.DRIVE_turnMultiplier; 
     rotation = driveTurnAxisId * directionModifer * turnModifer;
   }
@@ -56,8 +54,7 @@ public class ControlledDriveCommand extends Command {
   }
 
   protected void updateDrivetrain() {
-    // Robot.drivetrain.set(speed, rotation, quickTurn);
-    Robot.drivetrain.set(0, 0, false);
+    Robot.drivetrain.set(speed, rotation, quickTurn);
   }
 
   // Make this return true when this Command no longer needs to run execute()

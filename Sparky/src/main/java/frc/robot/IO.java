@@ -66,7 +66,7 @@ public class IO {
 
     // Make compressor available and also set up it on
     compressor = new Compressor(0);
-    compressor.setClosedLoopControl(true);
+    compressor.setClosedLoopControl(false);
 
     //Driver Code Controls 
     Button driveHighSpeedShift = new JoystickButton(driverGamepad, Config.GAMEPAD_driveHighSpeedButton);
@@ -82,9 +82,9 @@ public class IO {
     driveLowSpeedShift.whenPressed(new LowSpeedShiftCommand());
     driveIdleToggle.whenPressed(new ToggleIdleModeCommand());
 
-    limeLightAutoAlignButton.whileHeld(new LimeLightAutoAlignCommand());
-    ledOffButton.whenPressed(new LEDOffCommand());
-    ledOnButton.whenPressed(new LEDOnCommand());
+    // limeLightAutoAlignButton.whileHeld(new LimeLightAutoAlignCommand());
+    // ledOffButton.whenPressed(new LEDOffCommand());
+    // ledOnButton.whenPressed(new LEDOnCommand());
 
     // ENCODER CONTROLS
     Button zeroEncodersButton = new JoystickButton(playerGamepad, Config.GAMEPAD_zeroEncoders);
