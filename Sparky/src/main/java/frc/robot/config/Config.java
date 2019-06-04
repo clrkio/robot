@@ -140,11 +140,11 @@ public class Config {
     public final static int WRIST_backstopDIO = 7;
 
     public static double WRIST_lowerSpeed = -0.1; 
-    public static double WRIST_raiseSpeed = 0.2;
-    public static double WRIST_holdSpeedUp = 0;
+    public static double WRIST_raiseSpeed = 0.3;
+    public static double WRIST_holdSpeedUp = 0.08;
     public static double WRIST_holdSpeedCargo = 0.05;
     public static double WRIST_holdSpeedFlat = 0.05;
-    public static double WRIST_holdSpeedLoad = 0.05;
+    public static double WRIST_holdSpeedLoad = 0.1;
     public static double WRIST_speedMultiplier = -.25;
 
     public static double WRIST_positionUp = 0;
@@ -155,6 +155,20 @@ public class Config {
 
     public static boolean WRIST_skipDown = true; 
     public static boolean WRIST_autoUp = true; 
+
+    public final static int WRIST_kSlotIdx = 0;
+    public final static int WRIST_kPIDLoopIdx = 0;
+    public final static int WRIST_kTimeoutMs = 0;
+    public static double WRIST_kP = 0;
+    public static double WRIST_kI = 0;
+    public static double WRIST_kD = 0;
+    public static double WRIST_kF = 0;
+    public static double WRIST_kIzone = 0;
+    public static double WRIST_kPeakOutput = 0.2;
+    public static double WRIST_kCuriseVelocity = 15000;
+    public static double WRIST_kAcceleration = 6000;
+
+    
 
     // HATCH INTAKE CONFIG
     public static final int HATCH_INTAKE_leftSwitchDIO = 0; 

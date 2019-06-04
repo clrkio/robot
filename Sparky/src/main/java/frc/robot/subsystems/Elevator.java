@@ -327,6 +327,10 @@ public class Elevator extends SmartDashboardSubsystem {
     return snapState; 
   }
 
+  private double getStateHeight(States state) {
+    return stateData.get(state).targetHeight;
+  }
+
   private double getTargetPosition() {
     return getStateTargetPosition(targetState);
   }
@@ -336,7 +340,6 @@ public class Elevator extends SmartDashboardSubsystem {
   }
   
   public boolean isSafeForHatch() {
-    
     return getPosition() >= (getStateTargetPosition(States.HATCH_LOW) - Config.ELEVATOR_acceptableError);
   }
 
@@ -345,6 +348,8 @@ public class Elevator extends SmartDashboardSubsystem {
     SmartDashboard.putNumber("Elevator speed", setSpeed);
     SmartDashboard.putNumber("Elevator raw position", getPosition());
     SmartDashboard.putNumber("Elevator target position", getTargetPosition());
+    SmartDashboard.putNumber("Elevator curr height (in)", getPosition()/Config.ELEVATOR_encoderPerInch);
+    SmartDashboard.putNumber("Elevator target height", getStateHeight(targetState));
     SmartDashboard.putBoolean("Elevator isTopSwitchHit", isTopSwitchHit());
     SmartDashboard.putBoolean("Elevator isBottomSwitchHit", isBottomSwitchHit());
     SmartDashboard.putBoolean("Elevator attemptedUnsafeLower", isAttemptedUnsafeLower());
