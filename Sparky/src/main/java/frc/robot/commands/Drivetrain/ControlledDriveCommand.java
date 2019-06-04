@@ -17,7 +17,7 @@ public class ControlledDriveCommand extends Command {
   private static Logger logger = new Logger(ControlledDriveCommand.class.getSimpleName());
   protected double speed;
   protected double rotation; 
-  protected boolean turnInPlace = true; 
+  protected boolean turnInPlace; 
 
   public ControlledDriveCommand() {
     requires((Robot.drivetrain));
@@ -27,6 +27,9 @@ public class ControlledDriveCommand extends Command {
   @Override
   protected void execute() {
     setTurnInPlace();
+    setToddlerMode(); 
+    setFastTurnMode(); 
+    setBrakeMode(); 
     setSpeed();
     setTurn();
     updateDrivetrain();
@@ -51,6 +54,18 @@ public class ControlledDriveCommand extends Command {
 
   protected void setTurnInPlace() {
     turnInPlace = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveTurnInPlaceButton);
+  }
+
+  protected void setToddlerMode() {
+    Robot.drivetrain.setToddlerMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveToddlerMode)); 
+  }
+
+  protected void setBrakeMode() {
+    Robot.drivetrain.setIdleMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveBrakeMode));
+  }
+
+  protected void setFastTurnMode() {
+    Robot.drivetrain.setFastTurn(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveFastTurnButton));
   }
   
   protected void updateDrivetrain() {
