@@ -128,15 +128,15 @@ public class IO {
     wristLowerButton.whenPressed(new WristLowerCommand());
 
     // ELEVATOR CONTROLS
-    Button elevatorRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorUpButton);
-    Button elevatorLowerButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorDownButton);
-    Button elevatorCargoSkipRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorCargoSkipUpButton); 
-    Button elevatorHatchSkipRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorHatchSkipUpButton);
+    // Button elevatorRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorUpButton);
+    // Button elevatorLowerButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorDownButton);
+    // Button elevatorCargoSkipRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorCargoSkipUpButton); 
+    // Button elevatorHatchSkipRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorHatchSkipUpButton);
 
-    elevatorRaiseButton.whenPressed(new ElevatorRaiseCommand());
-    elevatorLowerButton.whenPressed(new ElevatorLowerCommand());
-    elevatorCargoSkipRaiseButton.whenPressed(new ElevatorCargoSkipRaiseCommand());
-    elevatorHatchSkipRaiseButton.whenPressed(new ElevatorHatchSkipRaiseCommand());
+    // elevatorRaiseButton.whenPressed(new ElevatorRaiseCommand());
+    // elevatorLowerButton.whenPressed(new ElevatorLowerCommand());
+    // elevatorCargoSkipRaiseButton.whenPressed(new ElevatorCargoSkipRaiseCommand());
+    // elevatorHatchSkipRaiseButton.whenPressed(new ElevatorHatchSkipRaiseCommand());
 
     //ELEVATOR GAMEPAD CONTROLS 
     Button elevatorCargoLoadButton = new JoystickAxisButton(playerElevatorGamepad, Config.GAMEPAD_elevatorCargoLoadButton);
