@@ -86,6 +86,7 @@ public class CargoIntake extends SmartDashboardSubsystem {
 
   public void setIgnorePhotoelectric(boolean ignore) {
     ignorePhotoelectric = ignore; 
+    logger.log("Setting ignorePhotoelectric to " + (ignorePhotoelectric ? "IGNORE" : "ENABLED")); 
   }
 
   @Override

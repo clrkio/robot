@@ -17,7 +17,7 @@ import frc.robot.config.*;
 public class LimeLightAutoAlignCommand extends Command {
   protected double speed; 
   protected double rotation; 
-  protected boolean quickTurn = true; 
+  protected boolean turnInPlace = true; 
   
   public LimeLightAutoAlignCommand() {
     requires(Robot.drivetrain);

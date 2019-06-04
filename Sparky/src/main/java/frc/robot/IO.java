@@ -72,6 +72,7 @@ public class IO {
     Button driveHighSpeedShift = new JoystickButton(driverGamepad, Config.GAMEPAD_driveHighSpeedButton);
     Button driveLowSpeedShift = new JoystickButton(driverGamepad, Config.GAMEPAD_driveLowSpeedButton);
     Button driveIdleToggle = new JoystickButton(driverGamepad, Config.GAMEPAD_driveToggleIdleMode);
+    Button driveToddlerMode = new JoystickButton(driverGamepad, Config.GAMEPAD_driveToddlerMode); 
     Button driveBrakeMode = new JoystickButton(driverGamepad, Config.GAMEPAD_driveBrakeMode); 
 
     Button limeLightAutoAlignButton = new JoystickButton(driverGamepad, Config.GAMEPAD_driveAutoButton); 
@@ -82,6 +83,8 @@ public class IO {
     driveHighSpeedShift.whenPressed(new HighSpeedShiftCommand());
     driveLowSpeedShift.whenPressed(new LowSpeedShiftCommand());
     driveIdleToggle.whenPressed(new ToggleIdleModeCommand());
+    driveToddlerMode.whileHeld(new ToddlerModeCommand(true));
+    driveToddlerMode.whenReleased(new ToddlerModeCommand(false));
     driveBrakeMode.whileHeld(new BrakeModeCommand(true));
     driveBrakeMode.whenReleased(new BrakeModeCommand(false));
 
