@@ -17,6 +17,7 @@ public class ControlledDriveCommand extends Command {
   private static Logger logger = new Logger(ControlledDriveCommand.class.getSimpleName());
   protected double speed;
   protected double rotation; 
+  protected boolean turnInPlace; 
 
   public ControlledDriveCommand() {
     requires((Robot.drivetrain));
@@ -26,8 +27,8 @@ public class ControlledDriveCommand extends Command {
   @Override
   protected void execute() {
     setTurnInPlace();
-    setFastTurnMode(); 
     setToddlerMode(); 
+    setFastTurnMode(); 
     setBrakeMode(); 
     setSpeed();
     setTurn();
@@ -38,32 +39,37 @@ public class ControlledDriveCommand extends Command {
     double forwardValue = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveForwardAxisId);
     double reverseValue = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveReverseAxisId);
 
-    speed = (forwardValue - reverseValue);
+    speed = (forwardValue - reverseValue)*Config.DRIVE_driveMultiplier;
+    if (turnInPlace) {
+      speed *= Config.DRIVE_turnInPlaceSpeedMultiplier; 
+    }
   }
 
   protected void setTurn() {
     double driveTurnAxisId = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
-    rotation = driveTurnAxisId;
+    double directionModifer = (!turnInPlace && speed > 0) ? -1 : 1;
+    double turnModifer = turnInPlace ? Config.DRIVE_turnInPlaceMultiplier : Config.DRIVE_turnMultiplier; 
+    rotation = driveTurnAxisId * directionModifer * turnModifer;
   }
 
   protected void setTurnInPlace() {
-    Robot.drivetrain.setTurnInPlace(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveTurnInPlaceModeButton));
-  }
-
-  protected void setFastTurnMode() {
-    Robot.drivetrain.setFastTurn(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveFastTurnModeButton));
+    turnInPlace = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveTurnInPlaceButton);
   }
 
   protected void setToddlerMode() {
-    Robot.drivetrain.setToddlerMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveToddlerModeButton)); 
+    Robot.drivetrain.setToddlerMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveToddlerMode)); 
   }
 
   protected void setBrakeMode() {
-    Robot.drivetrain.setIdleMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveBrakeModeButton));
+    Robot.drivetrain.setIdleMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveBrakeMode));
+  }
+
+  protected void setFastTurnMode() {
+    Robot.drivetrain.setFastTurn(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveFastTurnButton));
   }
   
   protected void updateDrivetrain() {
-    Robot.drivetrain.set(speed, rotation);
+    Robot.drivetrain.set(speed, rotation, turnInPlace);
   }
 
   // Make this return true when this Command no longer needs to run execute()
