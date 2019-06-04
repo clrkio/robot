@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -27,6 +28,8 @@ import frc.robot.impls.SmartDashboardSubsystem;
  * Add your docs here.
  */
 public class Wrist extends SmartDashboardSubsystem {
+  private static final double RAD_IN_90 = 1.5708;
+
   private static Logger logger = new Logger(Wrist.class.getSimpleName());
 
   enum Direction {
@@ -72,34 +75,13 @@ public class Wrist extends SmartDashboardSubsystem {
     wristMotor.setNeutralMode(NeutralMode.Brake);
 
     upLimitSwitch = new DigitalInput(Config.WRIST_backstopDIO);
+    setupMotionMagic();
 
     targetState = States.MANUAL;
     direction = Direction.HOLD;
     setSpeed = 0;
     autoSpeed = 0;
     hold();
-  }
-
-  private void setupMotionMagic() {
-    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
-                                            Config.WRIST_kPIDLoopIdx,
-                                            Config.WRIST_kTimeoutMs);
-    wristMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Config.WRIST_kTimeoutMs);
-    wristMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Config.WRIST_kTimeoutMs);
-
-    wristMotor.configNominalOutputForward(0, Config.WRIST_kTimeoutMs);
-		wristMotor.configNominalOutputReverse(0, Config.WRIST_kTimeoutMs);
-		wristMotor.configPeakOutputForward(1, Config.WRIST_kTimeoutMs);
-    wristMotor.configPeakOutputReverse(-1, Config.WRIST_kTimeoutMs);
-    
-    wristMotor.selectProfileSlot(Config.WRIST_kSlotIdx, Config.WRIST_kPIDLoopIdx);
-		wristMotor.config_kF(Config.WRIST_kSlotIdx, Config.WRIST_kF, Config.WRIST_kTimeoutMs);
-		wristMotor.config_kP(Config.WRIST_kSlotIdx, Config.WRIST_kP, Config.WRIST_kTimeoutMs);
-		wristMotor.config_kI(Config.WRIST_kSlotIdx, Config.WRIST_kI, Config.WRIST_kTimeoutMs);
-		wristMotor.config_kD(Config.WRIST_kSlotIdx, Config.WRIST_kD, Config.WRIST_kTimeoutMs);
-
-    wristMotor.configMotionCruiseVelocity(15000, Config.WRIST_kTimeoutMs);
-    wristMotor.configMotionAcceleration(6000, Config.WRIST_kTimeoutMs);
   }
 
   private void setupStateData() {
@@ -139,6 +121,12 @@ public class Wrist extends SmartDashboardSubsystem {
       setSpeed = speed;
     } else if (targetState == States.ZEROING) {
       return;
+    } else if (Config.WRIST_usePID) {
+
+      // wristMotor.set(ControlMode.MotionMagic,
+      //                getTargetPosition(), DemandType.ArbitraryFeedForward, getFeedForward());
+      logger.log(String.format("Would set (position, feed forward): (%d, %d)", getTargetPosition(), getFeedForward()));
+      return;
     } else if (targetState != States.MANUAL) {
       setSpeed = getAutoSpeed();
     }
@@ -155,8 +143,56 @@ public class Wrist extends SmartDashboardSubsystem {
     }
 
     wristMotor.set(setSpeed);
+    double currMotorOutput = wristMotor.getMotorOutputPercent();
+    double currVelocity = wristMotor.getSelectedSensorVelocity();
+    double maxVelocity = 0;
+    if (currMotorOutput != 0) {
+      maxVelocity = currVelocity / currMotorOutput;
+    }
+
+    logger.log(String.format("Motor values (output, velocity, max): (%f, %f, %f)", currMotorOutput, currVelocity, maxVelocity));
   }
 
+  // Magic motion code
+  private void setupMotionMagic() {
+    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
+                                            Config.WRIST_kPIDLoopIdx,
+                                            Config.WRIST_kTimeoutMs);
+    wristMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Config.WRIST_kTimeoutMs);
+    wristMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Config.WRIST_kTimeoutMs);
+
+    wristMotor.configNominalOutputForward(0, Config.WRIST_kTimeoutMs);
+		wristMotor.configNominalOutputReverse(0, Config.WRIST_kTimeoutMs);
+		wristMotor.configPeakOutputForward(1, Config.WRIST_kTimeoutMs);
+    wristMotor.configPeakOutputReverse(-1, Config.WRIST_kTimeoutMs);
+    
+    wristMotor.selectProfileSlot(Config.WRIST_kSlotIdx, Config.WRIST_kPIDLoopIdx);
+		wristMotor.config_kF(Config.WRIST_kSlotIdx, Config.WRIST_kF, Config.WRIST_kTimeoutMs);
+		wristMotor.config_kP(Config.WRIST_kSlotIdx, Config.WRIST_kP, Config.WRIST_kTimeoutMs);
+		wristMotor.config_kI(Config.WRIST_kSlotIdx, Config.WRIST_kI, Config.WRIST_kTimeoutMs);
+		wristMotor.config_kD(Config.WRIST_kSlotIdx, Config.WRIST_kD, Config.WRIST_kTimeoutMs);
+
+    wristMotor.configMotionCruiseVelocity(getCruiseVelocity(), Config.WRIST_kTimeoutMs);
+    wristMotor.configMotionAcceleration(getAcceleration(), Config.WRIST_kTimeoutMs);
+  }
+
+  private int getCruiseVelocity() {
+    return (int)Math.round(Config.WRIST_kMaxVelocity * Config.WRIST_kCruiseVelocityPercentage);
+  }
+
+  private int getAcceleration() {
+    return (int)Math.round(getCruiseVelocity() / Config.WRIST_kAccelerationNumSec);
+  }
+  
+  private double getAngle() {
+    return getWristPosition() / getStatePosition(States.LOAD) * RAD_IN_90;
+  }
+
+  private double getFeedForward() {
+    return Math.sin(getAngle()) * Config.WRIST_holdSpeedLoad;
+  }
+
+  // END magic motion code
   private double getAutoSpeed() {
     double currPosition = getWristPosition();
     double targetPosition = getTargetPosition();
@@ -225,7 +261,11 @@ public class Wrist extends SmartDashboardSubsystem {
   }
 
   private double getTargetPosition() {
-    return stateData.get(targetState).targetPosition;
+    return getStatePosition(targetState);
+  }
+
+  private double getStatePosition(States s) {
+    return stateData.get(s).targetPosition;
   }
 
   @Override

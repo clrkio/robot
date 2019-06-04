@@ -160,16 +160,16 @@ public class Config {
     public final static int WRIST_kSlotIdx = 0;
     public final static int WRIST_kPIDLoopIdx = 0;
     public final static int WRIST_kTimeoutMs = 0;
+    public static boolean WRIST_usePID = false;
     public static double WRIST_kP = 0;
     public static double WRIST_kI = 0;
     public static double WRIST_kD = 0;
     public static double WRIST_kF = 0;
     public static double WRIST_kIzone = 0;
     public static double WRIST_kPeakOutput = 0.2;
-    public static double WRIST_kCuriseVelocity = 15000;
-    public static double WRIST_kAcceleration = 6000;
-
-    
+    public static double WRIST_kMaxVelocity = 15000;
+    public static double WRIST_kCruiseVelocityPercentage = 0.5;
+    public static double WRIST_kAccelerationNumSec = 1;
 
     // HATCH INTAKE CONFIG
     public static final int HATCH_INTAKE_leftSwitchDIO = 0; 
