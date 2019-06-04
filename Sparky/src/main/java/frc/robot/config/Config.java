@@ -32,6 +32,7 @@ public class Config {
     public static final int POV_Down = 180;
     public static final int POV_Left = 270;
 
+
     public static final double MIN_AXIS_VALUE_FOR_PRESS = 0.1;
 
     // GAMEPAD CONFIG
@@ -42,14 +43,14 @@ public class Config {
     public static final int GAMEPAD_driveTurnAxisId = AXIS_leftXJoyStick; 
     public static final int GAMEPAD_driveReverseAxisId = AXIS_leftTrigger; 
     public static final int GAMEPAD_driveForwardAxisId = AXIS_rightTrigger; 
-    public static final int GAMEPAD_driveTurnInPlaceButton = BUTTON_A; 
+    public static final int GAMEPAD_driveTurnInPlaceModeButton = BUTTON_A; 
     public static final int GAMEPAD_driveHighSpeedButton = BUTTON_Y;
     public static final int GAMEPAD_driveLowSpeedButton = BUTTON_B;
     public static final int GAMEPAD_driveAutoButton = BUTTON_LB;
-    public static final int GAMEPAD_driveFastTurnButton = BUTTON_RB; 
-    public static final int GAMEPAD_driveToddlerMode = BUTTON_LB; 
+    public static final int GAMEPAD_driveFastTurnModeButton = BUTTON_RB; 
+    public static final int GAMEPAD_driveToddlerModeButton = BUTTON_LB; 
+    public static final int GAMEPAD_driveBrakeModeButton = BUTTON_X; 
 
-    public static final int GAMEPAD_driveBrakeMode = BUTTON_X; 
     public static final int GAMEPAD_driveToggleIdleMode = BUTTON_BACK;
 
     public static final int GAMEPAD_wristUpButton = BUTTON_RB;
@@ -121,8 +122,8 @@ public class Config {
     public static double DRIVE_fastTurnSpeedMultiplier = .5;
     public static double DRIVE_fastTurnTurnConstant = 1;  
     public static double DRIVE_turnInPlaceMultiplier = -.25; 
-    public static double DRIVE_turnInPlaceSpeedMultiplier = .1; 
-    public static double DRIVE_toddlerModeMultiplier = .5; 
+    public static double DRIVE_turnInPlaceSpeedMultiplier = .05; 
+    public static double DRIVE_toddlerModeMultiplier = .25; 
     public static double DRIVE_autoDriveMultiplier = .1; 
     public static double DRIVE_autoTurnMultiplier = 1;
     public static double DRIVE_autoMaxSpeed = .15; 
