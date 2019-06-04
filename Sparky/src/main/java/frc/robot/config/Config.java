@@ -151,7 +151,7 @@ public class Config {
     public static double WRIST_positionCargo = 1000;
     public static double WRIST_positionFlat = 2500;
     public static double WRIST_positionLoad = 2900;
-    public static double WRIST_acceptableError = 300;
+    public static double WRIST_acceptableError = 100;
 
     public static boolean WRIST_skipDown = true; 
     public static boolean WRIST_autoUp = true; 
@@ -159,8 +159,8 @@ public class Config {
     // HATCH INTAKE CONFIG
     public static final int HATCH_INTAKE_leftSwitchDIO = 0; 
     public static final int HATCH_INTAKE_rightSwitchDIO = 1;
-    public static double HATCH_INTAKE_rollerSpeedIn = 0.25; 
-    public static double HATCH_INTAKE_rollerSpeedOut = -0.4;
+    public static double HATCH_INTAKE_rollerSpeedIn = 0.4; 
+    public static double HATCH_INTAKE_rollerSpeedOut = -0.6;
     public static double HATCH_INTAKE_rollerSpeedHold = 0.1;
 
     // ELEVATOR CONFIG 
