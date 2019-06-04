@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.config.Config;
 import frc.robot.impls.SmartDashboardSubsystem;
@@ -40,9 +42,12 @@ public class Robot extends TimedRobot {
   public static Elevator elevator = new Elevator(); 
 
   Command m_autonomousCommand = null;
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  SendableChooser<Boolean> m_compressorState = new SendableChooser<>();
 
   private Preferences prefs;
+
+  public static Compressor compressor;
+  
 
   private SmartDashboardSubsystem[] subsystems =
     {drivetrain, wrist, cargoIntake, hatchIntake, elevator};
@@ -65,10 +70,14 @@ public class Robot extends TimedRobot {
 
     Config.updateConfig(prefs);
     m_oi = new IO();
-    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    // chooser.addOption("My Auto", new MyAutoCommand());
-    // SmartDashboard.putData("Auto mode", m_chooser);
-    CameraServer.getInstance().startAutomaticCapture(); 
+    m_compressorState.setDefaultOption("On", true);
+    m_compressorState.addOption("Off", false);
+
+    compressor = new Compressor(0);
+    
+    SmartDashboard.putData("Compress on", m_compressorState);
+    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(); 
+    camera.setResolution((int)Config.CAMERA_resX, (int)Config.CAMERA_resY);
   }
 
   /**
@@ -115,8 +124,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     logger.log("autonomousInit");
-    Config.updateConfig(prefs);
-    m_autonomousCommand = m_chooser.getSelected();
+    teleopInit();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -136,7 +144,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    Scheduler.getInstance().run();
+    teleopPeriodic();
   }
 
   @Override
@@ -147,6 +155,10 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     Config.updateConfig(prefs);
+    boolean isCompressorOn = m_compressorState.getSelected();
+    compressor.setClosedLoopControl(isCompressorOn);
+    logger.log("Compressor is " + (isCompressorOn ? "ON" : "OFF"));
+    
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

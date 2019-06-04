@@ -9,10 +9,11 @@ package frc.robot.commands.Elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Elevator.States;
 
 public class ElevatorSetStateCommand extends Command {
-  private int state; 
-  public ElevatorSetStateCommand(int s) {
+  private States state; 
+  public ElevatorSetStateCommand(States s) {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.elevator);
     state = s; 

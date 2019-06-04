@@ -14,7 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Logger;
-import frc.robot.IO;
+import frc.robot.Robot;
 import frc.robot.commands.CargoIntake.CargoIntakeCommand;
 import frc.robot.config.Config;
 import frc.robot.impls.SmartDashboardSubsystem;
@@ -35,6 +35,7 @@ public class CargoIntake extends SmartDashboardSubsystem {
   private DigitalInput photoelectricSensor; 
 
   private Direction direction;
+  private boolean ignorePhotoelectric; 
 
   public CargoIntake() {
     rollerMotor = new CANSparkMax(Config.CAN_cargoIntake, MotorType.kBrushed);
@@ -46,7 +47,7 @@ public class CargoIntake extends SmartDashboardSubsystem {
   } 
 
   public boolean isCargoDetected() {
-    return !photoelectricSensor.get() && !IO.playerGamepad.getRawButton(Config.GAMEPAD_ignorePhotoelectric);
+    return !photoelectricSensor.get() && !ignorePhotoelectric;
   }
 
   public void activateRollerIn() {
@@ -79,6 +80,14 @@ public class CargoIntake extends SmartDashboardSubsystem {
     }
   }
 
+  public boolean isPhotoelectricIgnored() {
+    return ignorePhotoelectric; 
+  }
+
+  public void setIgnorePhotoelectric(boolean ignore) {
+    ignorePhotoelectric = ignore; 
+  }
+
   @Override
   public void initDefaultCommand() {
     setDefaultCommand(new CargoIntakeCommand());
@@ -91,6 +100,6 @@ public class CargoIntake extends SmartDashboardSubsystem {
     
     // Smart dashboard cargo loaded and photoelectric value
     SmartDashboard.putBoolean("CargoIntake IsCargoDetected", isCargoDetected());
-    SmartDashboard.putBoolean("CargoIntake IgnorePhotoelectric", IO.playerGamepad.getRawButton(Config.GAMEPAD_ignorePhotoelectric));
+    SmartDashboard.putBoolean("CargoIntake IgnorePhotoelectric",ignorePhotoelectric);
   }
 }

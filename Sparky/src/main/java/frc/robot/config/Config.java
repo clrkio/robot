@@ -71,7 +71,7 @@ public class Config {
     public static final int GAMEPAD_elevatorAxisId = AXIS_rightYJoyStick;
     public static final int GAMEPAD_wristAxisId = AXIS_leftYJoyStick;
 
-    public static final int GAMEPAD_ignorePhotoelectric = BUTTON_BACK; 
+    public static final int GAMEPAD_togglePhotoelectric = BUTTON_BACK; 
 
     public static final int GAMEPAD_ledOn = BUTTON_leftJoyStick; 
     public static final int GAMEPAD_ledOff = BUTTON_rightJoyStick; 
@@ -107,13 +107,17 @@ public class Config {
     public static final int SOLENOID_hatchRetract = 1;
     public static final int SOLENOID_hatchExtend = 0;
 
+    // CAMERA CONFIG 
+    public static double CAMERA_resX = 480; 
+    public static double CAMERA_resY = 320; 
+
     // DRIVE CONFIG
     public static boolean DRIVE_disableNeoInHighSpeed = false;
     public static boolean DRIVE_startInHighSpeed = false; 
     public static boolean DRIVE_startInBrakeMode = false;
     public static double DRIVE_driveMultiplier = .5; 
     public static double DRIVE_turnMultiplier = .5; 
-    public static double DRIVE_fastTurnMultiplier = -.75; 
+    public static double DRIVE_fastTurnMultiplier = .75; 
     public static double DRIVE_quickTurnMultiplier = -.25; 
     public static double DRIVE_quickTurnSpeedMultiplier = .1; 
     public static double DRIVE_autoDriveMultiplier = .1; 
@@ -145,6 +149,9 @@ public class Config {
     public static double WRIST_positionLoad = 2900;
     public static double WRIST_acceptableError = 300;
 
+    public static boolean WRIST_skipDown = true; 
+    public static boolean WRIST_autoUp = true; 
+
     // HATCH INTAKE CONFIG
     public static final int HATCH_INTAKE_leftSwitchDIO = 0; 
     public static final int HATCH_INTAKE_rightSwitchDIO = 1;
@@ -165,8 +172,8 @@ public class Config {
     public static double ELEVATOR_heightCargoRocketMid = 30;
     public static double ELEVATOR_heightCargoRocketHigh = 58;
     public static double ELEVATOR_heightHatchLow = 13.5;
-    public static double ELEVATOR_heightHatchMid = 41.5;
-    public static double ELEVATOR_heightHatchHigh = 66.5;
+    public static double ELEVATOR_heightHatchMid = 42.5;
+    public static double ELEVATOR_heightHatchHigh = 69;
     public static double ELEVATOR_heightMax = 68;
 
     public static double ELEVATOR_acceptableError = 200;

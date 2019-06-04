@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
 import frc.robot.config.Config;
 import frc.robot.impls.JoystickAxisButton;
+import frc.robot.subsystems.Elevator.States;
 import frc.robot.commands.Drivetrain.*;
 import frc.robot.commands.Elevator.*;
 import frc.robot.commands.ZeroEncodersCommand;
@@ -58,16 +59,14 @@ public class IO {
   public static Joystick driverGamepad; 
   public static Joystick playerGamepad;
   public static Joystick playerElevatorGamepad; 
-  public static Compressor compressor;
-
+  
   public IO() {
     driverGamepad = new Joystick(Config.GAMEPAD_driverJoystickId);
     playerGamepad = new Joystick(Config.GAMEPAD_playerJoystickId); 
     playerElevatorGamepad = new Joystick(Config.GAMEPAD_playerEleJoystickId); 
 
     // Make compressor available and also set up it on
-    compressor = new Compressor(0);
-    compressor.setClosedLoopControl(false);
+    
 
     //Driver Code Controls 
     Button driveHighSpeedShift = new JoystickButton(driverGamepad, Config.GAMEPAD_driveHighSpeedButton);
@@ -109,9 +108,11 @@ public class IO {
     // CARGO CONTROLS
     Button cargoIntakeInButton = new JoystickButton(playerGamepad, Config.GAMEPAD_cargoIntakeRollerInButton);
     Button cargoIntakeOutButton = new JoystickAxisButton(playerGamepad, Config.GAMEPAD_cargoIntakeRollerOutAxis);
+    Button cargoIntakeTogglePhotoElectricButton = new JoystickButton(playerGamepad, Config.GAMEPAD_togglePhotoelectric); 
 
     cargoIntakeInButton.whileHeld(new CargoIntakeInCommand());
     cargoIntakeOutButton.whileHeld(new CargoIntakeOutCommand());
+    cargoIntakeTogglePhotoElectricButton.whenPressed(new CargoIntakeTogglePhotoelectricCommand());
 
     // WRIST CONTROLS
     Button wristRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_wristUpButton);
@@ -141,14 +142,14 @@ public class IO {
     Button elevatorRocketCargoHighButton = new JoystickButton(playerElevatorGamepad, Config.GAMEPAD_elevatorRocketCargoHighButton); 
     Button elevatorHatchHighButton = new JoystickButton(playerElevatorGamepad, Config.GAMEPAD_elevatorHatchHighButton); 
 
-    elevatorCargoLoadButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_cargoLoad));
-    elevatorRocketCargoLowButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_rocketCargoLow));
-    elevatorHatchLowButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_hatchLow));
-    elevatorCargoShipScoreButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_cargoShipScore));
-    elevatorRocketCargoMidButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_rocketCargoMid));
-    elevatorHatchMidButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_hatchMid));
-    elevatorRocketCargoHighButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_rocketCargoHigh));
-    elevatorHatchHighButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_hatchHigh));
+    elevatorCargoLoadButton.whenPressed(new ElevatorSetStateCommand(States.CARGO_LOAD));
+    elevatorRocketCargoLowButton.whenPressed(new ElevatorSetStateCommand(States.ROCKET_CARGO_LOW));
+    elevatorHatchLowButton.whenPressed(new ElevatorSetStateCommand(States.HATCH_LOW));
+    elevatorCargoShipScoreButton.whenPressed(new ElevatorSetStateCommand(States.CARGO_SHIP_SCORE));
+    elevatorRocketCargoMidButton.whenPressed(new ElevatorSetStateCommand(States.ROCKET_CARGO_MID));
+    elevatorHatchMidButton.whenPressed(new ElevatorSetStateCommand(States.HATCH_MID));
+    elevatorRocketCargoHighButton.whenPressed(new ElevatorSetStateCommand(States.ROCKET_CARGO_HIGH));
+    elevatorHatchHighButton.whenPressed(new ElevatorSetStateCommand(States.HATCH_HIGH));
 
   }
 }

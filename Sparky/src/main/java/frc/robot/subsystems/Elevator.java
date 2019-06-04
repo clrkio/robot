@@ -16,7 +16,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.IO;
 import frc.robot.Logger;
 import frc.robot.Robot;
 import frc.robot.commands.Elevator.ElevatorControlCommand;
@@ -32,7 +31,7 @@ public class Elevator extends SmartDashboardSubsystem {
     UP, DOWN, HOLD
   }
 
-  enum States {
+  public enum States {
     CARGO_LOAD,
     ROCKET_CARGO_LOW,
     HATCH_LOW,
@@ -41,7 +40,8 @@ public class Elevator extends SmartDashboardSubsystem {
     HATCH_MID,
     ROCKET_CARGO_HIGH,
     HATCH_HIGH,
-    MANUAL
+    MANUAL,
+    ZEROING
   }
 
   class StateData {
@@ -72,6 +72,7 @@ public class Elevator extends SmartDashboardSubsystem {
 
   private States targetState;
   private Direction direction;
+  private boolean attemptedUnsafeLower; 
 
   public Elevator() {
     setupStateData();
@@ -141,6 +142,11 @@ public class Elevator extends SmartDashboardSubsystem {
       new StateData(Config.ELEVATOR_heightHatchLow, 
                     States.HATCH_LOW, States.HATCH_LOW, 
                     States.HATCH_LOW, States.HATCH_LOW));
+
+    stateData.put(States.ZEROING, 
+      new StateData(Config.ELEVATOR_cargoLoad, 
+                    States.CARGO_LOAD, States.CARGO_LOAD, 
+                    States.CARGO_LOAD, States.CARGO_LOAD));
   }
 
   public void move(double speed) {
@@ -148,7 +154,9 @@ public class Elevator extends SmartDashboardSubsystem {
       targetState = States.MANUAL;
       setSpeed = speed;
     }
-    else if (targetState != States.MANUAL) {
+    else if (targetState == States.ZEROING) {
+      return;
+    } else if (targetState != States.MANUAL) {
       setSpeed = getAutoSpeed();
     }
 
@@ -171,6 +179,10 @@ public class Elevator extends SmartDashboardSubsystem {
 
   public boolean isBottomSwitchHit() {
     return !bottomSwitch.get();
+  }
+
+  public boolean isAttemptedUnsafeLower() {
+    return attemptedUnsafeLower; 
   }
 
   public double getPosition() { 
@@ -211,8 +223,9 @@ public class Elevator extends SmartDashboardSubsystem {
     autoSpeed = Config.ELEVATOR_holdSpeed;
   }
 
-  private boolean safeToLower() {
-    return !(targetState == States.HATCH_LOW && Robot.hatchIntake.isHatchExtended()); 
+  private boolean safeToSet(States nextState) {
+    return !((getStateTargetPosition(nextState) < getStateTargetPosition(States.HATCH_LOW) && 
+              Robot.hatchIntake.isHatchExtended()));
   }
 
   public void raise() {
@@ -225,9 +238,12 @@ public class Elevator extends SmartDashboardSubsystem {
 
   public void lower() {
     States nextState = stateData.get(targetState).lowerState;
-    if (!safeToLower()) {
+    if (!safeToSet(nextState)) {
       nextState = targetState;
+      attemptedUnsafeLower = true; 
       logger.log("Hatch is extended. Keeping elevator at: " + targetState.toString());
+    } else {
+      attemptedUnsafeLower = false; 
     }
     if (targetState != nextState) {
       logger.log("Lowering elevator to: " + nextState.toString());
@@ -254,40 +270,15 @@ public class Elevator extends SmartDashboardSubsystem {
     targetState = nextState; 
   }
 
-  public void setState(int state) {
-    States nextState; 
-    switch(state) {
-      case Config.ELEVATOR_cargoLoad: 
-        nextState = States.CARGO_LOAD; 
-        break; 
-      case Config.ELEVATOR_rocketCargoLow: 
-        nextState = States.ROCKET_CARGO_LOW; 
-        break; 
-      case Config.ELEVATOR_hatchLow: 
-        nextState = States.HATCH_LOW; 
-        break; 
-      case Config.ELEVATOR_cargoShipScore: 
-        nextState = States.CARGO_SHIP_SCORE; 
-        break; 
-      case Config.ELEVATOR_rocketCargoMid: 
-        nextState = States.ROCKET_CARGO_MID; 
-        break; 
-      case Config.ELEVATOR_hatchMid: 
-        nextState = States.HATCH_MID; 
-        break; 
-      case Config.ELEVATOR_rocketCargoHigh: 
-        nextState = States.ROCKET_CARGO_HIGH; 
-        break; 
-      case Config.ELEVATOR_hatchHigh: 
-        nextState = States.HATCH_HIGH; 
-        break; 
-      default: 
-        nextState = States.MANUAL; 
-    } 
-    if (!safeToLower()) {
+  public void setState(States nextState) {
+    if (!safeToSet(nextState)) {
       nextState = targetState;
+      attemptedUnsafeLower = true; 
       logger.log("Hatch is extended. Keeping elevator at: " + targetState.toString());
-    } 
+    } else {
+      attemptedUnsafeLower = false; 
+    }
+
     if (targetState != nextState) {
       logger.log("Moving elevator to: " + nextState.toString());
     }
@@ -345,7 +336,8 @@ public class Elevator extends SmartDashboardSubsystem {
   }
   
   public boolean isSafeForHatch() {
-    return getPosition() >= getStateTargetPosition(States.HATCH_LOW);
+    
+    return getPosition() >= (getStateTargetPosition(States.HATCH_LOW) - Config.ELEVATOR_acceptableError);
   }
 
   @Override
@@ -355,6 +347,7 @@ public class Elevator extends SmartDashboardSubsystem {
     SmartDashboard.putNumber("Elevator target position", getTargetPosition());
     SmartDashboard.putBoolean("Elevator isTopSwitchHit", isTopSwitchHit());
     SmartDashboard.putBoolean("Elevator isBottomSwitchHit", isBottomSwitchHit());
+    SmartDashboard.putBoolean("Elevator attemptedUnsafeLower", isAttemptedUnsafeLower());
     
     SmartDashboard.putNumber("Elevator autoSpeed", autoSpeed);
     SmartDashboard.putString("Elevator Target State", targetState.toString());
@@ -367,7 +360,24 @@ public class Elevator extends SmartDashboardSubsystem {
   }
 
   public void zeroEncoder() {
-    elevatorMasterMotor.setSelectedSensorPosition(0, 0, 0);
+    if (Robot.hatchIntake.isHatchExtended()) {
+      logger.log("Can't zero while hatch is extended!");
+      attemptedUnsafeLower = true; 
+      return;
+    } else {
+      attemptedUnsafeLower = false; 
+    }
+
+    targetState = States.ZEROING;
+    if (!isBottomSwitchHit()) {
+      setSpeed = Config.ELEVATOR_downSpeed;
+      elevatorMasterMotor.set(setSpeed);
+    }
+    else {
+      elevatorMasterMotor.setSelectedSensorPosition(0, 0, 0);
+      targetState = States.MANUAL;
+    }
   }
+  
 
 }

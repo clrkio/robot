@@ -5,28 +5,25 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.CargoIntake;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ZeroEncodersCommand extends Command {
-  public ZeroEncodersCommand() {
-    // Use requires() here to declare subsystem dependencies
-    requires(Robot.wrist);
-    requires(Robot.elevator);
+public class CargoIntakeTogglePhotoelectricCommand extends Command {
+  public CargoIntakeTogglePhotoelectricCommand() {
+    requires(Robot.cargoIntake);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.wrist.zeroEncoder();
-    Robot.elevator.zeroEncoder();
+    Robot.cargoIntake.setIgnorePhotoelectric(!Robot.cargoIntake.isPhotoelectricIgnored()); 
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.elevator.isBottomSwitchHit() && Robot.wrist.isUpLimitHit();
+    return true;
   }
 }

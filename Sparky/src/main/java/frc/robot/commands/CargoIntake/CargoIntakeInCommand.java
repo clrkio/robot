@@ -10,6 +10,7 @@ package frc.robot.commands.CargoIntake;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Logger;
 import frc.robot.Robot;
+import frc.robot.config.Config;
 
 public class CargoIntakeInCommand extends Command {
   private static Logger logger = new Logger(CargoIntakeInCommand.class.getSimpleName());
@@ -23,6 +24,9 @@ public class CargoIntakeInCommand extends Command {
   @Override
   protected void execute() {
     Robot.cargoIntake.activateRollerIn();
+    if (Robot.cargoIntake.isCargoDetected() && Config.WRIST_autoUp) {
+      Robot.wrist.raise();
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()

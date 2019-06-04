@@ -37,7 +37,8 @@ public class Wrist extends SmartDashboardSubsystem {
     CARGO_SHIP,
     FLAT,
     LOAD,
-    MANUAL
+    MANUAL, 
+    ZEROING
   }
 
   class StateData {
@@ -93,7 +94,10 @@ public class Wrist extends SmartDashboardSubsystem {
       new StateData(Config.WRIST_positionUp, States.UP, States.CARGO_SHIP, Config.WRIST_holdSpeedUp));
   
     stateData.put(States.MANUAL, 
-      new StateData(Config.WRIST_positionUp, States.UP, States.UP, Config.WRIST_holdSpeedUp));
+      new StateData(Config.WRIST_positionUp, States.UP, States.FLAT, Config.WRIST_holdSpeedUp));
+
+    stateData.put(States.ZEROING, 
+      new StateData(Config.WRIST_positionUp, States.UP, States.FLAT, Config.WRIST_holdSpeedUp));
   }
 
   public void init() {
@@ -110,6 +114,8 @@ public class Wrist extends SmartDashboardSubsystem {
     if (Math.abs(speed) > 0.05) {
       targetState = States.MANUAL;
       setSpeed = speed;
+    } else if (targetState == States.ZEROING) {
+      return;
     } else if (targetState != States.MANUAL) {
       setSpeed = getAutoSpeed();
     }
@@ -165,18 +171,26 @@ public class Wrist extends SmartDashboardSubsystem {
   public void raise() {
     States nextState; 
     if (Robot.cargoIntake.isCargoDetected()) {
-      nextState = States.UP; 
+      nextState = States.UP;
+      logger.log("Cargo detected while raising");
     } else {
       nextState = stateData.get(targetState).raiseState;
     }
     if (targetState != nextState) {
-      logger.log("Raising wrist to: " + nextState.toString());
+      logger.log("Raising wrist to: " + nextState.toString() + " from " + targetState.toString());
     }
     targetState = nextState;
   }
 
   public void lower() {
-    States nextState = stateData.get(targetState).lowerState;
+    States nextState; 
+    if (Config.WRIST_skipDown && !Robot.cargoIntake.isCargoDetected()) {
+      nextState = States.FLAT; 
+      logger.log("No cargo detected while lowering. Skipping down to FLAT"); 
+    }
+    else {
+      nextState = stateData.get(targetState).lowerState;
+    } 
     if (targetState != nextState) {
       logger.log("Lowering wrist to: " + nextState.toString());
     }
@@ -208,6 +222,14 @@ public class Wrist extends SmartDashboardSubsystem {
   }
 
   public void zeroEncoder() {
-    wristMotor.setSelectedSensorPosition(0, 0, 0);
+    targetState = States.ZEROING; 
+    if (!isUpLimitHit()) {
+      setSpeed = Config.WRIST_raiseSpeed; 
+      wristMotor.set(setSpeed); 
+    } 
+    else {
+      wristMotor.setSelectedSensorPosition(0, 0, 0);
+      targetState = States.MANUAL;
+    }
   }
 }
