@@ -44,15 +44,14 @@ public class Drivetrain extends SmartDashboardSubsystem {
   private DoubleSolenoid speedShifterSolenoid;
   private boolean isHighSpeed;
   private boolean isBrakeMode;
+  private boolean isToddlerMode; 
+  private boolean isFastTurnMode; 
+  private boolean isTurnInPlaceMode;
 
   public DifferentialDrive robotDrive;
 
-  private double setSpeed;
-  private double setRotation;
-  private boolean setQuickturn;
-  private boolean toddlerMode; 
-  private boolean fastTurn; 
-  
+  private double speed;
+  private double rotation;
 
   public Drivetrain() {
     shift(Config.DRIVE_startInHighSpeed);
@@ -80,13 +79,17 @@ public class Drivetrain extends SmartDashboardSubsystem {
     // Reverse = Low Speed
     speedShifterSolenoid = new DoubleSolenoid(Config.SOLENOID_driveHighSpeed, Config.SOLENOID_driveLowSpeed);
 
-    setSpeed = 0;
-    setRotation = 0;
-    setQuickturn = false;
+    speed = 0;
+    rotation = 0;
+    isBrakeMode = false; 
+    isToddlerMode = false; 
+    isFastTurnMode = false; 
+    isTurnInPlaceMode = false;
   }
 
   public void stop() {
-    set(0, 0, false);
+    unSetAllPressedModes(); 
+    set(0, 0);
   }
 
   public double getLeftPosition() {
@@ -106,27 +109,32 @@ public class Drivetrain extends SmartDashboardSubsystem {
   }
 
   public boolean isToddlerMode() {
-    return toddlerMode; 
+    return isToddlerMode; 
   }
 
-  public void setFastTurn(boolean ft) {
-    fastTurn = ft; 
-  }
-
-  public void set(double speed, double rotation, boolean turnInPlace) {
-    if (fastTurn) {
-      double slowSpeed = speed * Config.DRIVE_fastTurnSpeedMultiplier; 
-      double fastSpeedMultiplier = Math.abs(rotation) + Config.DRIVE_fastTurnTurnConstant; 
+  public void set(double requestedSpeed, double requestedRotation) {
+    if (isFastTurnMode) {
+      double slowSpeed = requestedSpeed * Config.DRIVE_fastTurnSpeedMultiplier; 
+      double fastSpeedMultiplier = Math.abs(requestedRotation) + Config.DRIVE_fastTurnTurnConstant; 
       double fastSpeed = slowSpeed * fastSpeedMultiplier; 
-        if (rotation > 0) {
+        if (requestedRotation > 0) {
           robotDrive.tankDrive(fastSpeed, slowSpeed);
         } else {
           robotDrive.tankDrive(slowSpeed, fastSpeed);
         }
     } else {
-      robotDrive.curvatureDrive(speed, rotation, turnInPlace);
-      setSpeed = toddlerMode ? speed*Config.DRIVE_toddlerModeMultiplier : speed;
-      setRotation = toddlerMode ? rotation*Config.DRIVE_toddlerModeMultiplier : rotation; 
+      double directionModifer = (!isTurnInPlaceMode && requestedSpeed > 0) ? -1 : 1;
+      double turnModifer = isTurnInPlaceMode ? Config.DRIVE_turnInPlaceMultiplier : Config.DRIVE_turnMultiplier; 
+      rotation = requestedRotation * directionModifer * turnModifer; 
+
+      double speedModifier = isTurnInPlaceMode ? Config.DRIVE_turnInPlaceSpeedMultiplier : Config.DRIVE_driveMultiplier; 
+      speed = requestedSpeed * speedModifier; 
+
+      if (isToddlerMode) {
+        rotation *= Config.DRIVE_toddlerModeMultiplier; 
+        speed *= Config.DRIVE_toddlerModeMultiplier; 
+      }
+      robotDrive.curvatureDrive(speed, rotation, isTurnInPlaceMode); 
     }
   }
 
@@ -153,26 +161,56 @@ public class Drivetrain extends SmartDashboardSubsystem {
     }
   }
 
-  public void setIdleMode(boolean toBrakeMode) {
-    if (toBrakeMode == isBrakeMode) {
+  public void setIdleMode(boolean toMode) {
+    if (toMode == isBrakeMode) {
       return;
     }
     
-    logger.log("Setting idle mode to " + (toBrakeMode ? "brake" : "coast") + " mode.");
-    isBrakeMode = toBrakeMode;
+    logger.log("Setting idle mode to " + (toMode ? "brake" : "coast") + " mode.");
+    isBrakeMode = toMode;
 
     IdleMode toSet = isBrakeMode ? IdleMode.kBrake : IdleMode.kCoast;
     leftMotorPrimary.setIdleMode(toSet);
-    // leftMotorSlaveA.setIdleMode(toSet);
-    // leftMotorSlaveB.setIdleMode(toSet);
+    leftMotorSlaveA.setIdleMode(toSet);
+    leftMotorSlaveB.setIdleMode(toSet);
     rightMotorPrimary.setIdleMode(toSet);
-    // rightMotorSlaveA.setIdleMode(toSet);
-    // rightMotorSlaveB.setIdleMode(toSet);
+    rightMotorSlaveA.setIdleMode(toSet);
+    rightMotorSlaveB.setIdleMode(toSet);
+  }
+
+  public void setFastTurn(boolean toMode) {
+    if (isTurnInPlaceMode && toMode) {
+      isFastTurnMode = false; 
+      logger.log("Cannot set both turnInPlace and fastTurn, defaulting to turnInPlace"); 
+    }
+    if (isFastTurnMode == toMode) {
+      return; 
+    } 
+    logger.log("Setting fast turn mode to " + (toMode ? "fastTurn" : "normalTurn") + " mode."); 
+    isFastTurnMode = toMode; 
+  }
+
+  public void setTurnInPlace(boolean toMode) {
+    if (isTurnInPlaceMode == toMode) {
+      return; 
+    } 
+    logger.log("Setting turn in place mode to " + (toMode ? "turnInPlace" : "normalTurn") + " mode."); 
+    isTurnInPlaceMode = toMode; 
   }
 
   public void setToddlerMode(boolean toMode) {
-    logger.log("Setting toddler mode to " + (toddlerMode ? "ON" : "OFF")); 
-    toddlerMode = toMode; 
+    if (toMode == isToddlerMode) {
+      return; 
+    }
+    logger.log("Setting toddler mode to " + (toMode ? "ON" : "OFF")); 
+    isToddlerMode = toMode; 
+  }
+
+  private void unSetAllPressedModes() {
+    isBrakeMode = false; 
+    isToddlerMode = false; 
+    isFastTurnMode = false; 
+    isTurnInPlaceMode = false; 
   }
 
   @Override
@@ -184,9 +222,9 @@ public class Drivetrain extends SmartDashboardSubsystem {
   public void logSmartDashboard() {
     SmartDashboard.putNumber("Drivetrain left encoder", getLeftPosition());
     SmartDashboard.putNumber("Drivetrain right encoder", getRightPosition());
-    SmartDashboard.putNumber("Drivetrain speed", setSpeed);
-    SmartDashboard.putNumber("Drivetrain turn", setRotation);
-    SmartDashboard.putBoolean("Drivetrain quickturn", setQuickturn);
+    SmartDashboard.putNumber("Drivetrain speed", speed);
+    SmartDashboard.putNumber("Drivetrain turn", rotation);
+    SmartDashboard.putBoolean("Drivetrain quickturn", isTurnInPlaceMode);
     SmartDashboard.putString("Drivetrain idleMode", isBrakeMode() ? "BRAKE" : "COAST");
     SmartDashboard.putString("Drivetrain speedMode", isHighSpeed() ? "HIGH" : "LOW");
   }
