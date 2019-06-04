@@ -10,17 +10,19 @@ package frc.robot.commands.Drivetrain;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ToggleToddlerModeCommand extends Command {
-  public ToggleToddlerModeCommand() {
+public class ToddlerModeCommand extends Command {
+  private boolean toddler; 
+  public ToddlerModeCommand(boolean t) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.drivetrain);
+    toddler = t; 
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.drivetrain.setToddlerMode(!Robot.drivetrain.isToddlerMode());
+    Robot.drivetrain.setToddlerMode(toddler);
   }
 
   // Make this return true when this Command no longer needs to run execute()
