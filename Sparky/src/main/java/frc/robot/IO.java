@@ -69,20 +69,19 @@ public class IO {
     
 
     //Driver Code Controls 
-    Button driveHighSpeedShift = new JoystickButton(driverGamepad, Config.GAMEPAD_driveHighSpeedButton);
-    Button driveLowSpeedShift = new JoystickButton(driverGamepad, Config.GAMEPAD_driveLowSpeedButton);
-    Button driveIdleToggle = new JoystickButton(driverGamepad, Config.GAMEPAD_driveToggleIdleMode);
+    Button driveHighSpeedShiftButton = new JoystickButton(driverGamepad, Config.GAMEPAD_driveHighSpeedButton);
+    Button driveLowSpeedShiftButton = new JoystickButton(driverGamepad, Config.GAMEPAD_driveLowSpeedButton);
+    Button driveIdleToggleButton = new JoystickButton(driverGamepad, Config.GAMEPAD_driveToggleIdleModeButton);
 
     Button limeLightAutoAlignButton = new JoystickButton(driverGamepad, Config.GAMEPAD_driveAutoButton); 
     Button ledOffButton = new JoystickButton(playerGamepad, Config.GAMEPAD_ledOff); 
     Button ledOnButton = new JoystickButton(playerGamepad, Config.GAMEPAD_ledOn); 
 
     // DRIVE CONTROLS
-    driveHighSpeedShift.whenPressed(new HighSpeedShiftCommand());
-    driveLowSpeedShift.whenPressed(new LowSpeedShiftCommand());
-    driveIdleToggle.whenPressed(new ToggleIdleModeCommand());
+    driveHighSpeedShiftButton.whenPressed(new HighSpeedShiftCommand());
+    driveLowSpeedShiftButton.whenPressed(new LowSpeedShiftCommand());
+    driveIdleToggleButton.whenPressed(new ToggleIdleModeCommand());
 
-    // limeLightAutoAlignButton.whileHeld(new LimeLightAutoAlignCommand());
     // ledOffButton.whenPressed(new LEDOffCommand());
     // ledOnButton.whenPressed(new LEDOnCommand());
 
