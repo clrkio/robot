@@ -135,6 +135,7 @@ public class Config {
     public static double CARGO_INTAKE_cargoLoadTimeThreshold = 1.0; 
     public static double CARGO_INTAKE_rollerInSpeed = 0.60; 
     public static double CARGO_INTAKE_rollerOutSpeed = -0.80; 
+    public static double CARGO_INTAKE_rollerOutFastSpeed = -1.0; 
     public static double CARGO_INTAKE_holdSpeed = 0.15; 
 
     // WRIST CONFIG

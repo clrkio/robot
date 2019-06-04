@@ -243,7 +243,7 @@ public class Wrist extends SmartDashboardSubsystem {
 
   public void lower() {
     States nextState; 
-    if (Config.WRIST_skipDown && !Robot.cargoIntake.isCargoDetected()) {
+    if (Config.WRIST_skipDown && targetState != States.FLAT && !Robot.cargoIntake.isCargoDetected()) {
       nextState = States.FLAT; 
       logger.log("No cargo detected while lowering. Skipping down to FLAT"); 
     }

@@ -61,7 +61,11 @@ public class CargoIntake extends SmartDashboardSubsystem {
   }
 
   public void activateRollerOut() {
-    rollerMotor.set(Config.CARGO_INTAKE_rollerOutSpeed);
+    if (Robot.elevator.isRocketCargoHigh()) {
+      rollerMotor.set(Config.CARGO_INTAKE_rollerOutFastSpeed); 
+    } else {
+      rollerMotor.set(Config.CARGO_INTAKE_rollerOutSpeed);
+    }
     direction = Direction.OUT;
   }
 
