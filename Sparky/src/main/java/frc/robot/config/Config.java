@@ -51,7 +51,7 @@ public class Config {
     public static final int GAMEPAD_driveToddlerModeButton = BUTTON_LB; 
     public static final int GAMEPAD_driveBrakeModeButton = BUTTON_X; 
 
-    public static final int GAMEPAD_driveToggleIdleMode = BUTTON_BACK;
+    public static final int GAMEPAD_driveToggleIdleModeButton = BUTTON_BACK;
 
     public static final int GAMEPAD_wristUpButton = BUTTON_RB;
     public static final int GAMEPAD_wristDownAxis = AXIS_rightTrigger;
@@ -119,11 +119,12 @@ public class Config {
     public static boolean DRIVE_startInBrakeMode = false;
     public static double DRIVE_driveMultiplier = .5; 
     public static double DRIVE_turnMultiplier = .5; 
-    public static double DRIVE_fastTurnSpeedMultiplier = .5;
-    public static double DRIVE_fastTurnTurnConstant = 1;  
+    public static double DRIVE_fastTurnSpeedMultiplier = .25;
+    public static double DRIVE_fastTurnTurnConstant = 2;  
     public static double DRIVE_turnInPlaceMultiplier = -.25; 
     public static double DRIVE_turnInPlaceSpeedMultiplier = .05; 
-    public static double DRIVE_toddlerModeMultiplier = .25; 
+    public static double DRIVE_toddlerModeSpeedMultiplier = .25; 
+    public static double DRIVE_toddlerModeTurnMultiplier = .5; 
     public static double DRIVE_autoDriveMultiplier = .1; 
     public static double DRIVE_autoTurnMultiplier = 1;
     public static double DRIVE_autoMaxSpeed = .15; 

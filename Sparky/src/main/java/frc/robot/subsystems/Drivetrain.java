@@ -81,7 +81,6 @@ public class Drivetrain extends SmartDashboardSubsystem {
 
     speed = 0;
     rotation = 0;
-    isBrakeMode = false; 
     isToddlerMode = false; 
     isFastTurnMode = false; 
     isTurnInPlaceMode = false;
@@ -117,7 +116,7 @@ public class Drivetrain extends SmartDashboardSubsystem {
       double slowSpeed = requestedSpeed * Config.DRIVE_fastTurnSpeedMultiplier; 
       double fastSpeedMultiplier = Math.abs(requestedRotation) + Config.DRIVE_fastTurnTurnConstant; 
       double fastSpeed = slowSpeed * fastSpeedMultiplier; 
-        if (requestedRotation > 0) {
+        if (requestedRotation < 0) {
           robotDrive.tankDrive(fastSpeed, slowSpeed);
         } else {
           robotDrive.tankDrive(slowSpeed, fastSpeed);
@@ -131,8 +130,8 @@ public class Drivetrain extends SmartDashboardSubsystem {
       speed = requestedSpeed * speedModifier; 
 
       if (isToddlerMode) {
-        rotation *= Config.DRIVE_toddlerModeMultiplier; 
-        speed *= Config.DRIVE_toddlerModeMultiplier; 
+        speed *= Config.DRIVE_toddlerModeSpeedMultiplier; 
+        rotation *= Config.DRIVE_toddlerModeTurnMultiplier; 
       }
       robotDrive.curvatureDrive(speed, rotation, isTurnInPlaceMode); 
     }
