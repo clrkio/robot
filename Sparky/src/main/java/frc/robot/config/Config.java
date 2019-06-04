@@ -118,7 +118,8 @@ public class Config {
     public static boolean DRIVE_startInBrakeMode = false;
     public static double DRIVE_driveMultiplier = .5; 
     public static double DRIVE_turnMultiplier = .5; 
-    public static double DRIVE_fastTurnMultiplier = .75; 
+    public static double DRIVE_fastTurnSpeedMultiplier = .5;
+    public static double DRIVE_fastTurnTurnConstant = 1;  
     public static double DRIVE_turnInPlaceMultiplier = -.25; 
     public static double DRIVE_turnInPlaceSpeedMultiplier = .1; 
     public static double DRIVE_toddlerModeMultiplier = .5; 

@@ -51,6 +51,7 @@ public class Drivetrain extends SmartDashboardSubsystem {
   private double setRotation;
   private boolean setQuickturn;
   private boolean toddlerMode; 
+  private boolean fastTurn; 
   
 
   public Drivetrain() {
@@ -108,10 +109,25 @@ public class Drivetrain extends SmartDashboardSubsystem {
     return toddlerMode; 
   }
 
+  public void setFastTurn(boolean ft) {
+    fastTurn = ft; 
+  }
+
   public void set(double speed, double rotation, boolean turnInPlace) {
-    robotDrive.curvatureDrive(speed, rotation, turnInPlace);
-    setSpeed = toddlerMode ? speed*Config.DRIVE_toddlerModeMultiplier : speed;
-    setRotation = toddlerMode ? rotation*Config.DRIVE_toddlerModeMultiplier : rotation;
+    if (fastTurn) {
+      double slowSpeed = speed * Config.DRIVE_fastTurnSpeedMultiplier; 
+      double fastSpeedMultiplier = Math.abs(rotation) + Config.DRIVE_fastTurnTurnConstant; 
+      double fastSpeed = slowSpeed * fastSpeedMultiplier; 
+        if (rotation > 0) {
+          robotDrive.tankDrive(fastSpeed, slowSpeed);
+        } else {
+          robotDrive.tankDrive(slowSpeed, fastSpeed);
+        }
+    } else {
+      robotDrive.curvatureDrive(speed, rotation, turnInPlace);
+      setSpeed = toddlerMode ? speed*Config.DRIVE_toddlerModeMultiplier : speed;
+      setRotation = toddlerMode ? rotation*Config.DRIVE_toddlerModeMultiplier : rotation; 
+    }
   }
 
   public void shift(boolean toHighSpeed) {

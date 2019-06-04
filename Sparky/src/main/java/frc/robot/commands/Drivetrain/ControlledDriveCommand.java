@@ -18,7 +18,6 @@ public class ControlledDriveCommand extends Command {
   protected double speed;
   protected double rotation; 
   protected boolean turnInPlace = true; 
-  protected boolean fastTurn; 
 
   public ControlledDriveCommand() {
     requires((Robot.drivetrain));
@@ -28,7 +27,6 @@ public class ControlledDriveCommand extends Command {
   @Override
   protected void execute() {
     setTurnInPlace();
-    setFastTurn(); 
     setSpeed();
     setTurn();
     updateDrivetrain();
@@ -47,8 +45,7 @@ public class ControlledDriveCommand extends Command {
   protected void setTurn() {
     double driveTurnAxisId = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
     double directionModifer = (!turnInPlace && speed > 0) ? -1 : 1;
-    double turnModifer = turnInPlace ? Config.DRIVE_turnInPlaceMultiplier : 
-                        (fastTurn ? Config.DRIVE_fastTurnMultiplier : Config.DRIVE_turnMultiplier); 
+    double turnModifer = turnInPlace ? Config.DRIVE_turnInPlaceMultiplier : Config.DRIVE_turnMultiplier; 
     rotation = driveTurnAxisId * directionModifer * turnModifer;
   }
 
@@ -56,10 +53,6 @@ public class ControlledDriveCommand extends Command {
     turnInPlace = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveTurnInPlaceButton);
   }
   
-  protected void setFastTurn() {
-    fastTurn = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveFastTurnButton); 
-  }
-
   protected void updateDrivetrain() {
     Robot.drivetrain.set(speed, rotation, turnInPlace);
   }
