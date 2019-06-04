@@ -17,7 +17,7 @@ public class ControlledDriveCommand extends Command {
   private static Logger logger = new Logger(ControlledDriveCommand.class.getSimpleName());
   protected double speed;
   protected double rotation; 
-  protected boolean quickTurn = true; 
+  protected boolean turnInPlace = true; 
   protected boolean fastTurn; 
 
   public ControlledDriveCommand() {
@@ -27,7 +27,7 @@ public class ControlledDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    setQuickTurn();
+    setTurnInPlace();
     setFastTurn(); 
     setSpeed();
     setTurn();
@@ -39,21 +39,21 @@ public class ControlledDriveCommand extends Command {
     double reverseValue = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveReverseAxisId);
 
     speed = (forwardValue - reverseValue)*Config.DRIVE_driveMultiplier;
-    if (quickTurn) {
-      speed *= Config.DRIVE_quickTurnSpeedMultiplier; 
+    if (turnInPlace) {
+      speed *= Config.DRIVE_turnInPlaceSpeedMultiplier; 
     }
   }
 
   protected void setTurn() {
     double driveTurnAxisId = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
-    double directionModifer = (!quickTurn && speed > 0) ? -1 : 1;
-    double turnModifer = quickTurn ? Config.DRIVE_quickTurnMultiplier : 
+    double directionModifer = (!turnInPlace && speed > 0) ? -1 : 1;
+    double turnModifer = turnInPlace ? Config.DRIVE_turnInPlaceMultiplier : 
                         (fastTurn ? Config.DRIVE_fastTurnMultiplier : Config.DRIVE_turnMultiplier); 
     rotation = driveTurnAxisId * directionModifer * turnModifer;
   }
 
-  protected void setQuickTurn() {
-    quickTurn = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveQuickTurnButton);
+  protected void setTurnInPlace() {
+    turnInPlace = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveTurnInPlaceButton);
   }
   
   protected void setFastTurn() {
@@ -61,7 +61,7 @@ public class ControlledDriveCommand extends Command {
   }
 
   protected void updateDrivetrain() {
-    Robot.drivetrain.set(speed, rotation, quickTurn);
+    Robot.drivetrain.set(speed, rotation, turnInPlace);
   }
 
   // Make this return true when this Command no longer needs to run execute()

@@ -50,6 +50,7 @@ public class Drivetrain extends SmartDashboardSubsystem {
   private double setSpeed;
   private double setRotation;
   private boolean setQuickturn;
+  private boolean toddlerMode; 
   
 
   public Drivetrain() {
@@ -103,11 +104,14 @@ public class Drivetrain extends SmartDashboardSubsystem {
     return isBrakeMode;
   }
 
-  public void set(double speed, double rotation, boolean quickTurn) {
-    robotDrive.curvatureDrive(speed, rotation, quickTurn);
-    setSpeed = speed;
-    setRotation = rotation;
-    setQuickturn = quickTurn;
+  public boolean isToddlerMode() {
+    return toddlerMode; 
+  }
+
+  public void set(double speed, double rotation, boolean turnInPlace) {
+    robotDrive.curvatureDrive(speed, rotation, turnInPlace);
+    setSpeed = toddlerMode ? speed*Config.DRIVE_toddlerModeMultiplier : speed;
+    setRotation = toddlerMode ? rotation*Config.DRIVE_toddlerModeMultiplier : rotation;
   }
 
   public void shift(boolean toHighSpeed) {
@@ -148,6 +152,11 @@ public class Drivetrain extends SmartDashboardSubsystem {
     rightMotorPrimary.setIdleMode(toSet);
     // rightMotorSlaveA.setIdleMode(toSet);
     // rightMotorSlaveB.setIdleMode(toSet);
+  }
+
+  public void setToddlerMode(boolean toMode) {
+    logger.log("Setting toddler mode to " + (toddlerMode ? "ON" : "OFF")); 
+    toddlerMode = toMode; 
   }
 
   @Override

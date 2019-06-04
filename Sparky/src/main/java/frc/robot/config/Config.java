@@ -42,11 +42,12 @@ public class Config {
     public static final int GAMEPAD_driveTurnAxisId = AXIS_leftXJoyStick; 
     public static final int GAMEPAD_driveReverseAxisId = AXIS_leftTrigger; 
     public static final int GAMEPAD_driveForwardAxisId = AXIS_rightTrigger; 
-    public static final int GAMEPAD_driveQuickTurnButton = BUTTON_A; 
+    public static final int GAMEPAD_driveTurnInPlaceButton = BUTTON_A; 
     public static final int GAMEPAD_driveHighSpeedButton = BUTTON_Y;
     public static final int GAMEPAD_driveLowSpeedButton = BUTTON_B;
     public static final int GAMEPAD_driveAutoButton = BUTTON_LB;
     public static final int GAMEPAD_driveFastTurnButton = BUTTON_RB; 
+    public static final int GAMEPAD_driveToddlerMode = BUTTON_LB; 
 
     public static final int GAMEPAD_driveBrakeMode = BUTTON_X; 
     public static final int GAMEPAD_driveToggleIdleMode = BUTTON_BACK;
@@ -118,8 +119,9 @@ public class Config {
     public static double DRIVE_driveMultiplier = .5; 
     public static double DRIVE_turnMultiplier = .5; 
     public static double DRIVE_fastTurnMultiplier = .75; 
-    public static double DRIVE_quickTurnMultiplier = -.25; 
-    public static double DRIVE_quickTurnSpeedMultiplier = .1; 
+    public static double DRIVE_turnInPlaceMultiplier = -.25; 
+    public static double DRIVE_turnInPlaceSpeedMultiplier = .1; 
+    public static double DRIVE_toddlerModeMultiplier = .5; 
     public static double DRIVE_autoDriveMultiplier = .1; 
     public static double DRIVE_autoTurnMultiplier = 1;
     public static double DRIVE_autoMaxSpeed = .15; 
