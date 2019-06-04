@@ -17,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Logger;
+import frc.robot.Robot;
 import frc.robot.commands.Wrist.WristControlCommand;
 import frc.robot.config.Config;
 import frc.robot.impls.SmartDashboardSubsystem;
@@ -33,9 +34,9 @@ public class Wrist extends SmartDashboardSubsystem {
 
   enum States {
     UP,
+    CARGO_SHIP,
     FLAT,
     LOAD,
-    CARGO_SHIP,
     MANUAL
   }
 
@@ -162,7 +163,12 @@ public class Wrist extends SmartDashboardSubsystem {
   }
 
   public void raise() {
-    States nextState = stateData.get(targetState).raiseState;
+    States nextState; 
+    if (Robot.cargoIntake.isCargoDetected()) {
+      nextState = States.UP; 
+    } else {
+      nextState = stateData.get(targetState).raiseState;
+    }
     if (targetState != nextState) {
       logger.log("Raising wrist to: " + nextState.toString());
     }

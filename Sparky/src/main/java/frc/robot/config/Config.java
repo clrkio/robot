@@ -37,14 +37,18 @@ public class Config {
     // GAMEPAD CONFIG
     public static final int GAMEPAD_driverJoystickId = 0;
     public static final int GAMEPAD_playerJoystickId = 1;
+    public static final int GAMEPAD_playerEleJoystickId = 2;
 	
     public static final int GAMEPAD_driveTurnAxisId = AXIS_leftXJoyStick; 
     public static final int GAMEPAD_driveReverseAxisId = AXIS_leftTrigger; 
     public static final int GAMEPAD_driveForwardAxisId = AXIS_rightTrigger; 
     public static final int GAMEPAD_driveQuickTurnButton = BUTTON_A; 
-    public static final int GAMEPAD_driveAutoButton = BUTTON_B;
     public static final int GAMEPAD_driveHighSpeedButton = BUTTON_Y;
-    public static final int GAMEPAD_driveLowSpeedButton = BUTTON_X;
+    public static final int GAMEPAD_driveLowSpeedButton = BUTTON_B;
+    public static final int GAMEPAD_driveAutoButton = BUTTON_LB;
+    public static final int GAMEPAD_driveFastTurnButton = BUTTON_RB; 
+
+    public static final int GAMEPAD_driveBrakeMode = BUTTON_X; 
     public static final int GAMEPAD_driveToggleIdleMode = BUTTON_BACK;
 
     public static final int GAMEPAD_wristUpButton = BUTTON_RB;
@@ -59,14 +63,27 @@ public class Config {
     
     public static final int GAMEPAD_elevatorUpButton = BUTTON_Y;
     public static final int GAMEPAD_elevatorDownButton = BUTTON_A;
+    public static final int GAMEPAD_elevatorCargoSkipUpButton = BUTTON_B; 
+    public static final int GAMEPAD_elevatorHatchSkipUpButton = BUTTON_X; 
 
     public static final int GAMEPAD_zeroEncoders = BUTTON_START;
 
     public static final int GAMEPAD_elevatorAxisId = AXIS_rightYJoyStick;
     public static final int GAMEPAD_wristAxisId = AXIS_leftYJoyStick;
 
+    public static final int GAMEPAD_ignorePhotoelectric = BUTTON_BACK; 
+
     public static final int GAMEPAD_ledOn = BUTTON_leftJoyStick; 
-    public static final int GAMEPAD_ledOff = BUTTON_rightJoyStick;  
+    public static final int GAMEPAD_ledOff = BUTTON_rightJoyStick; 
+
+    public static final int GAMEPAD_elevatorCargoLoadButton = AXIS_leftTrigger; 
+    public static final int GAMEPAD_elevatorRocketCargoLowButton = BUTTON_RB; 
+    public static final int GAMEPAD_elevatorHatchLowButton = AXIS_rightTrigger; 
+    public static final int GAMEPAD_elevatorCargoShipScoreButton = BUTTON_LB; 
+    public static final int GAMEPAD_elevatorRocketCargoMidButton = BUTTON_Y; 
+    public static final int GAMEPAD_elevatorHatchMidButton = BUTTON_B; 
+    public static final int GAMEPAD_elevatorRocketCargoHighButton = BUTTON_X; 
+    public static final int GAMEPAD_elevatorHatchHighButton = BUTTON_A; 
 
     // CAN IDs
     public static final int CAN_leftDrivePrimary = 4;
@@ -96,6 +113,7 @@ public class Config {
     public static boolean DRIVE_startInBrakeMode = false;
     public static double DRIVE_driveMultiplier = .5; 
     public static double DRIVE_turnMultiplier = .5; 
+    public static double DRIVE_fastTurnMultiplier = -.75; 
     public static double DRIVE_quickTurnMultiplier = -.25; 
     public static double DRIVE_quickTurnSpeedMultiplier = .1; 
     public static double DRIVE_autoDriveMultiplier = .1; 
@@ -155,6 +173,16 @@ public class Config {
     public static double ELEVATOR_upSpeed = 0.4;
     public static double ELEVATOR_downSpeed = -0.2;
     public static double ELEVATOR_holdSpeed = 0.08;
+
+    public static final int ELEVATOR_cargoLoad = 1; 
+    public static final int ELEVATOR_rocketCargoLow = 2; 
+    public static final int ELEVATOR_hatchLow = 3; 
+    public static final int ELEVATOR_cargoShipScore = 4; 
+    public static final int ELEVATOR_rocketCargoMid = 5; 
+    public static final int ELEVATOR_hatchMid = 6; 
+    public static final int ELEVATOR_rocketCargoHigh = 7; 
+    public static final int ELEVATOR_hatchHigh = 8; 
+    public static final int ELEVATOR_manual = 9; 
 
     // LIMELIGHT CONFIG
     public static final int LIMELIGHT_LED_ON = 3; 

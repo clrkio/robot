@@ -18,6 +18,7 @@ public class ControlledDriveCommand extends Command {
   protected double speed;
   protected double rotation; 
   protected boolean quickTurn = true; 
+  protected boolean fastTurn; 
 
   public ControlledDriveCommand() {
     requires((Robot.drivetrain));
@@ -27,6 +28,7 @@ public class ControlledDriveCommand extends Command {
   @Override
   protected void execute() {
     setQuickTurn();
+    setFastTurn(); 
     setSpeed();
     setTurn();
     updateDrivetrain();
@@ -45,12 +47,17 @@ public class ControlledDriveCommand extends Command {
   protected void setTurn() {
     double driveTurnAxisId = IO.driverGamepad.getRawAxis(Config.GAMEPAD_driveTurnAxisId);
     double directionModifer = (!quickTurn && speed > 0) ? -1 : 1;
-    double turnModifer = quickTurn ? Config.DRIVE_quickTurnMultiplier : Config.DRIVE_turnMultiplier; 
+    double turnModifer = quickTurn ? Config.DRIVE_quickTurnMultiplier : 
+                        (fastTurn ? Config.DRIVE_fastTurnMultiplier : Config.DRIVE_turnMultiplier); 
     rotation = driveTurnAxisId * directionModifer * turnModifer;
   }
 
   protected void setQuickTurn() {
     quickTurn = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveQuickTurnButton);
+  }
+  
+  protected void setFastTurn() {
+    fastTurn = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveFastTurnButton); 
   }
 
   protected void updateDrivetrain() {

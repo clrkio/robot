@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.IO;
 import frc.robot.Logger;
 import frc.robot.Robot;
 import frc.robot.commands.Elevator.ElevatorControlCommand;
@@ -47,11 +48,15 @@ public class Elevator extends SmartDashboardSubsystem {
     public double targetHeight;
     public States raiseState;
     public States lowerState;
+    public States skipRaiseState; 
+    public States skipLowerState; 
 
-    public StateData(double t, States r, States l) {
+    public StateData(double t, States r, States l, States sr, States sl) {
       targetHeight = t;
       raiseState = r;
       lowerState = l;
+      skipRaiseState = sr; 
+      skipLowerState = sl; 
     }
   }
 
@@ -86,38 +91,56 @@ public class Elevator extends SmartDashboardSubsystem {
     bottomSwitch = new DigitalInput(Config.ELEVATOR_bottomSwitchDIO);
     setSpeed = 0;
     autoSpeed = 0;
-    targetState = States.CARGO_LOAD;
+    targetState = States.MANUAL;
     direction = Direction.HOLD;
   }
 
   private void setupStateData() {
     stateData = new HashMap<>();
     stateData.put(States.CARGO_LOAD,
-      new StateData(Config.ELEVATOR_heightCargoLoadGround, States.ROCKET_CARGO_LOW, States.CARGO_LOAD));
+      new StateData(Config.ELEVATOR_heightCargoLoadGround, 
+                    States.ROCKET_CARGO_LOW, States.CARGO_LOAD, 
+                    States.ROCKET_CARGO_LOW, States.CARGO_LOAD));
 
     stateData.put(States.ROCKET_CARGO_LOW, 
-      new StateData(Config.ELEVATOR_heightCargoRocketLow, States.HATCH_LOW, States.CARGO_LOAD));
+      new StateData(Config.ELEVATOR_heightCargoRocketLow, 
+                    States.HATCH_LOW, States.CARGO_LOAD, 
+                    States.CARGO_SHIP_SCORE, States.CARGO_LOAD));
 
     stateData.put(States.HATCH_LOW, 
-      new StateData(Config.ELEVATOR_heightHatchLow, States.CARGO_SHIP_SCORE, States.ROCKET_CARGO_LOW));
+      new StateData(Config.ELEVATOR_heightHatchLow, 
+                    States.CARGO_SHIP_SCORE, States.ROCKET_CARGO_LOW, 
+                    States.HATCH_MID, States.HATCH_LOW));
 
     stateData.put(States.CARGO_SHIP_SCORE, 
-      new StateData(Config.ELEVATOR_heightCargoScore, States.ROCKET_CARGO_MID, States.HATCH_LOW));
+      new StateData(Config.ELEVATOR_heightCargoScore, 
+                    States.ROCKET_CARGO_MID, States.HATCH_LOW, 
+                    States.ROCKET_CARGO_MID, States.ROCKET_CARGO_LOW));
 
     stateData.put(States.ROCKET_CARGO_MID,
-      new StateData(Config.ELEVATOR_heightCargoRocketMid, States.HATCH_MID, States.CARGO_SHIP_SCORE));
+      new StateData(Config.ELEVATOR_heightCargoRocketMid, 
+                    States.HATCH_MID, States.CARGO_SHIP_SCORE, 
+                    States.ROCKET_CARGO_HIGH, States.CARGO_SHIP_SCORE));
 
     stateData.put(States.HATCH_MID,
-      new StateData(Config.ELEVATOR_heightHatchMid, States.ROCKET_CARGO_HIGH, States.ROCKET_CARGO_MID));
+      new StateData(Config.ELEVATOR_heightHatchMid, 
+                    States.ROCKET_CARGO_HIGH, States.ROCKET_CARGO_MID, 
+                    States.HATCH_HIGH, States.HATCH_LOW));
 
     stateData.put(States.ROCKET_CARGO_HIGH,
-      new StateData(Config.ELEVATOR_heightCargoRocketHigh, States.HATCH_HIGH, States.HATCH_MID));
+      new StateData(Config.ELEVATOR_heightCargoRocketHigh, 
+                    States.HATCH_HIGH, States.HATCH_MID, 
+                    States.ROCKET_CARGO_HIGH, States.ROCKET_CARGO_MID));
 
     stateData.put(States.HATCH_HIGH,
-      new StateData(Config.ELEVATOR_heightHatchHigh, States.HATCH_HIGH, States.ROCKET_CARGO_HIGH));
+      new StateData(Config.ELEVATOR_heightHatchHigh, 
+                    States.HATCH_HIGH, States.ROCKET_CARGO_HIGH, 
+                    States.HATCH_HIGH, States.HATCH_MID));
 
     stateData.put(States.MANUAL, 
-      new StateData(Config.ELEVATOR_heightHatchLow, States.HATCH_LOW, States.HATCH_LOW));
+      new StateData(Config.ELEVATOR_heightHatchLow, 
+                    States.HATCH_LOW, States.HATCH_LOW, 
+                    States.HATCH_LOW, States.HATCH_LOW));
   }
 
   public void move(double speed) {
@@ -188,6 +211,10 @@ public class Elevator extends SmartDashboardSubsystem {
     autoSpeed = Config.ELEVATOR_holdSpeed;
   }
 
+  private boolean safeToLower() {
+    return !(targetState == States.HATCH_LOW && Robot.hatchIntake.isHatchExtended()); 
+  }
+
   public void raise() {
     States nextState = stateData.get(targetState).raiseState;
     if (targetState != nextState) {
@@ -198,7 +225,7 @@ public class Elevator extends SmartDashboardSubsystem {
 
   public void lower() {
     States nextState = stateData.get(targetState).lowerState;
-    if (targetState == States.HATCH_LOW && Robot.hatchIntake.isHatchExtended()) {
+    if (!safeToLower()) {
       nextState = targetState;
       logger.log("Hatch is extended. Keeping elevator at: " + targetState.toString());
     }
@@ -206,6 +233,107 @@ public class Elevator extends SmartDashboardSubsystem {
       logger.log("Lowering elevator to: " + nextState.toString());
     }
     targetState = nextState;
+  }
+
+  public void cargoSkipRaise() {
+    States nextState = stateData.get(getSnapToCargoState(targetState)).skipRaiseState; 
+    if (targetState == States.CARGO_LOAD || targetState == States.ROCKET_CARGO_LOW || targetState == States.HATCH_LOW) {
+      nextState = States.CARGO_SHIP_SCORE; 
+    } 
+    if (targetState != nextState) {
+      logger.log("Raising elevator to: " + nextState.toString());
+    }
+    targetState = nextState; 
+  }
+
+  public void hatchSkipRaise() {
+    States nextState = stateData.get(getSnapToHatchState(targetState)).skipRaiseState; 
+    if (targetState != nextState) {
+      logger.log("Raising elevator to: " + nextState.toString());
+    }
+    targetState = nextState; 
+  }
+
+  public void setState(int state) {
+    States nextState; 
+    switch(state) {
+      case Config.ELEVATOR_cargoLoad: 
+        nextState = States.CARGO_LOAD; 
+        break; 
+      case Config.ELEVATOR_rocketCargoLow: 
+        nextState = States.ROCKET_CARGO_LOW; 
+        break; 
+      case Config.ELEVATOR_hatchLow: 
+        nextState = States.HATCH_LOW; 
+        break; 
+      case Config.ELEVATOR_cargoShipScore: 
+        nextState = States.CARGO_SHIP_SCORE; 
+        break; 
+      case Config.ELEVATOR_rocketCargoMid: 
+        nextState = States.ROCKET_CARGO_MID; 
+        break; 
+      case Config.ELEVATOR_hatchMid: 
+        nextState = States.HATCH_MID; 
+        break; 
+      case Config.ELEVATOR_rocketCargoHigh: 
+        nextState = States.ROCKET_CARGO_HIGH; 
+        break; 
+      case Config.ELEVATOR_hatchHigh: 
+        nextState = States.HATCH_HIGH; 
+        break; 
+      default: 
+        nextState = States.MANUAL; 
+    } 
+    if (!safeToLower()) {
+      nextState = targetState;
+      logger.log("Hatch is extended. Keeping elevator at: " + targetState.toString());
+    } 
+    if (targetState != nextState) {
+      logger.log("Moving elevator to: " + nextState.toString());
+    }
+    targetState = nextState;
+  }
+
+  private States getSnapToCargoState(States state) {
+    States snapState; 
+    switch(state) {
+      case HATCH_LOW: 
+        snapState = States.ROCKET_CARGO_LOW; 
+        break; 
+      case HATCH_MID: 
+        snapState = States.ROCKET_CARGO_MID; 
+        break; 
+      case HATCH_HIGH:
+        snapState = States.ROCKET_CARGO_HIGH; 
+        break; 
+      default:  
+        snapState = state; 
+    }
+    return snapState; 
+  }
+
+  private States getSnapToHatchState(States state) {
+    States snapState; 
+    switch(state) {
+      case CARGO_LOAD: 
+        snapState = States.MANUAL; 
+        break; 
+      case ROCKET_CARGO_LOW: 
+        snapState = States.MANUAL; 
+        break;
+      case CARGO_SHIP_SCORE: 
+        snapState = States.HATCH_LOW; 
+        break; 
+      case ROCKET_CARGO_MID: 
+        snapState = States.HATCH_LOW; 
+        break; 
+      case ROCKET_CARGO_HIGH: 
+        snapState = States.HATCH_MID; 
+        break; 
+      default: 
+        snapState = state; 
+    }
+    return snapState; 
   }
 
   private double getTargetPosition() {

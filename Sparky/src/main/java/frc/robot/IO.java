@@ -15,8 +15,7 @@ import edu.wpi.first.wpilibj.buttons.POVButton;
 import frc.robot.config.Config;
 import frc.robot.impls.JoystickAxisButton;
 import frc.robot.commands.Drivetrain.*;
-import frc.robot.commands.Elevator.ElevatorLowerCommand;
-import frc.robot.commands.Elevator.ElevatorRaiseCommand;
+import frc.robot.commands.Elevator.*;
 import frc.robot.commands.ZeroEncodersCommand;
 import frc.robot.commands.CargoIntake.*;
 import frc.robot.commands.HatchIntake.*;
@@ -58,11 +57,13 @@ public class IO {
   // button.whenReleased(new ExampleCommand());
   public static Joystick driverGamepad; 
   public static Joystick playerGamepad;
+  public static Joystick playerElevatorGamepad; 
   public static Compressor compressor;
 
   public IO() {
     driverGamepad = new Joystick(Config.GAMEPAD_driverJoystickId);
     playerGamepad = new Joystick(Config.GAMEPAD_playerJoystickId); 
+    playerElevatorGamepad = new Joystick(Config.GAMEPAD_playerEleJoystickId); 
 
     // Make compressor available and also set up it on
     compressor = new Compressor(0);
@@ -72,6 +73,7 @@ public class IO {
     Button driveHighSpeedShift = new JoystickButton(driverGamepad, Config.GAMEPAD_driveHighSpeedButton);
     Button driveLowSpeedShift = new JoystickButton(driverGamepad, Config.GAMEPAD_driveLowSpeedButton);
     Button driveIdleToggle = new JoystickButton(driverGamepad, Config.GAMEPAD_driveToggleIdleMode);
+    Button driveBrakeMode = new JoystickButton(driverGamepad, Config.GAMEPAD_driveBrakeMode); 
 
     Button limeLightAutoAlignButton = new JoystickButton(driverGamepad, Config.GAMEPAD_driveAutoButton); 
     Button ledOffButton = new JoystickButton(playerGamepad, Config.GAMEPAD_ledOff); 
@@ -81,6 +83,8 @@ public class IO {
     driveHighSpeedShift.whenPressed(new HighSpeedShiftCommand());
     driveLowSpeedShift.whenPressed(new LowSpeedShiftCommand());
     driveIdleToggle.whenPressed(new ToggleIdleModeCommand());
+    driveBrakeMode.whileHeld(new BrakeModeCommand(true));
+    driveBrakeMode.whenReleased(new BrakeModeCommand(false));
 
     // limeLightAutoAlignButton.whileHeld(new LimeLightAutoAlignCommand());
     // ledOffButton.whenPressed(new LEDOffCommand());
@@ -119,8 +123,32 @@ public class IO {
     // ELEVATOR CONTROLS
     Button elevatorRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorUpButton);
     Button elevatorLowerButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorDownButton);
+    Button elevatorCargoSkipRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorCargoSkipUpButton); 
+    Button elevatorHatchSkipRaiseButton = new JoystickButton(playerGamepad, Config.GAMEPAD_elevatorHatchSkipUpButton);
 
     elevatorRaiseButton.whenPressed(new ElevatorRaiseCommand());
     elevatorLowerButton.whenPressed(new ElevatorLowerCommand());
+    elevatorCargoSkipRaiseButton.whenPressed(new ElevatorCargoSkipRaiseCommand());
+    elevatorHatchSkipRaiseButton.whenPressed(new ElevatorHatchSkipRaiseCommand());
+
+    //ELEVATOR GAMEPAD CONTROLS 
+    Button elevatorCargoLoadButton = new JoystickAxisButton(playerElevatorGamepad, Config.GAMEPAD_elevatorCargoLoadButton);
+    Button elevatorRocketCargoLowButton = new JoystickButton(playerElevatorGamepad, Config.GAMEPAD_elevatorRocketCargoLowButton); 
+    Button elevatorHatchLowButton = new JoystickAxisButton(playerElevatorGamepad, Config.GAMEPAD_elevatorHatchLowButton);
+    Button elevatorCargoShipScoreButton = new JoystickButton(playerElevatorGamepad, Config.GAMEPAD_elevatorCargoShipScoreButton); 
+    Button elevatorRocketCargoMidButton = new JoystickButton(playerElevatorGamepad, Config.GAMEPAD_elevatorRocketCargoMidButton); 
+    Button elevatorHatchMidButton = new JoystickButton(playerElevatorGamepad, Config.GAMEPAD_elevatorHatchMidButton); 
+    Button elevatorRocketCargoHighButton = new JoystickButton(playerElevatorGamepad, Config.GAMEPAD_elevatorRocketCargoHighButton); 
+    Button elevatorHatchHighButton = new JoystickButton(playerElevatorGamepad, Config.GAMEPAD_elevatorHatchHighButton); 
+
+    elevatorCargoLoadButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_cargoLoad));
+    elevatorRocketCargoLowButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_rocketCargoLow));
+    elevatorHatchLowButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_hatchLow));
+    elevatorCargoShipScoreButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_cargoShipScore));
+    elevatorRocketCargoMidButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_rocketCargoMid));
+    elevatorHatchMidButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_hatchMid));
+    elevatorRocketCargoHighButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_rocketCargoHigh));
+    elevatorHatchHighButton.whenPressed(new ElevatorSetStateCommand(Config.ELEVATOR_hatchHigh));
+
   }
 }

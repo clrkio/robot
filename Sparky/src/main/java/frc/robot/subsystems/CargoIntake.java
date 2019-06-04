@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Logger;
+import frc.robot.IO;
 import frc.robot.commands.CargoIntake.CargoIntakeCommand;
 import frc.robot.config.Config;
 import frc.robot.impls.SmartDashboardSubsystem;
@@ -45,7 +46,7 @@ public class CargoIntake extends SmartDashboardSubsystem {
   } 
 
   public boolean isCargoDetected() {
-    return !photoelectricSensor.get();
+    return !photoelectricSensor.get() && !IO.playerGamepad.getRawButton(Config.GAMEPAD_ignorePhotoelectric);
   }
 
   public void activateRollerIn() {
@@ -90,5 +91,6 @@ public class CargoIntake extends SmartDashboardSubsystem {
     
     // Smart dashboard cargo loaded and photoelectric value
     SmartDashboard.putBoolean("CargoIntake IsCargoDetected", isCargoDetected());
+    SmartDashboard.putBoolean("CargoIntake IgnorePhotoelectric", IO.playerGamepad.getRawButton(Config.GAMEPAD_ignorePhotoelectric));
   }
 }
