@@ -185,6 +185,10 @@ public class Elevator extends SmartDashboardSubsystem {
     return attemptedUnsafeLower; 
   }
 
+  public boolean isRocketCargoHigh() {
+    return targetState == States.ROCKET_CARGO_HIGH; 
+  }
+
   public double getPosition() { 
     return elevatorMasterMotor.getSelectedSensorPosition(); 
   }
