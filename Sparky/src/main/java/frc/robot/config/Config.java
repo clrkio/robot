@@ -171,9 +171,9 @@ public class Config {
 
     public static double ELEVATOR_heightCargoLoadGround = -1;
     public static double ELEVATOR_heightCargoScore = 21;
-    public static double ELEVATOR_heightCargoRocketLow = 2;
-    public static double ELEVATOR_heightCargoRocketMid = 30;
-    public static double ELEVATOR_heightCargoRocketHigh = 58;
+    public static double ELEVATOR_heightCargoRocketLow = 6;
+    public static double ELEVATOR_heightCargoRocketMid = 34;
+    public static double ELEVATOR_heightCargoRocketHigh = 63;
     public static double ELEVATOR_heightHatchLow = 13.5;
     public static double ELEVATOR_heightHatchMid = 42.5;
     public static double ELEVATOR_heightHatchHigh = 69;
