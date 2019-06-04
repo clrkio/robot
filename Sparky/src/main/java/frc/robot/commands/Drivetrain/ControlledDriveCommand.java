@@ -17,6 +17,14 @@ public class ControlledDriveCommand extends Command {
   private static Logger logger = new Logger(ControlledDriveCommand.class.getSimpleName());
   protected double speed;
   protected double rotation; 
+<<<<<<< HEAD
+<<<<<<< HEAD
+  protected boolean turnInPlace = true; 
+=======
+>>>>>>> parent of d7d2ff8... Revert "driveTrain fixes"
+=======
+  protected boolean turnInPlace; 
+>>>>>>> parent of bcac80d... Revert "Merge branch 'master' of https://github.com/vivianmo/FRC-9020"
 
   public ControlledDriveCommand() {
     requires((Robot.drivetrain));
@@ -26,9 +34,18 @@ public class ControlledDriveCommand extends Command {
   @Override
   protected void execute() {
     setTurnInPlace();
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
     setFastTurnMode(); 
     setToddlerMode(); 
     setBrakeMode(); 
+>>>>>>> parent of d7d2ff8... Revert "driveTrain fixes"
+=======
+    setToddlerMode(); 
+    setFastTurnMode(); 
+    setBrakeMode(); 
+>>>>>>> parent of bcac80d... Revert "Merge branch 'master' of https://github.com/vivianmo/FRC-9020"
     setSpeed();
     setTurn();
     updateDrivetrain();
@@ -49,6 +66,9 @@ public class ControlledDriveCommand extends Command {
   protected void setTurnInPlace() {
     Robot.drivetrain.setTurnInPlace(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveTurnInPlaceModeButton));
   }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 
   protected void setFastTurnMode() {
     Robot.drivetrain.setFastTurn(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveFastTurnModeButton));
@@ -61,6 +81,21 @@ public class ControlledDriveCommand extends Command {
   protected void setBrakeMode() {
     Robot.drivetrain.setIdleMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveBrakeModeButton));
   }
+>>>>>>> parent of d7d2ff8... Revert "driveTrain fixes"
+=======
+
+  protected void setToddlerMode() {
+    Robot.drivetrain.setToddlerMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveToddlerMode)); 
+  }
+
+  protected void setBrakeMode() {
+    Robot.drivetrain.setIdleMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveBrakeMode));
+  }
+
+  protected void setFastTurnMode() {
+    Robot.drivetrain.setFastTurn(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveFastTurnButton));
+  }
+>>>>>>> parent of bcac80d... Revert "Merge branch 'master' of https://github.com/vivianmo/FRC-9020"
   
   protected void updateDrivetrain() {
     Robot.drivetrain.set(speed, rotation);
