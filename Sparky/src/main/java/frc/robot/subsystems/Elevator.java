@@ -102,7 +102,7 @@ public class Elevator extends SmartDashboardSubsystem {
     direction = Direction.HOLD;
   }
 
-  private void setupStateData() {
+  public void setupStateData() {
     stateData = new HashMap<>();
     stateData.put(States.CARGO_LOAD,
       new StateData(Config.ELEVATOR_heightCargoLoadGround, 

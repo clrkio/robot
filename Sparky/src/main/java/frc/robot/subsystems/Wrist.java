@@ -85,7 +85,7 @@ public class Wrist extends SmartDashboardSubsystem {
     autoSpeed = 0;
   }
 
-  private void setupStateData() {
+  public void setupStateData() {
     stateData = new HashMap<>();
     stateData.put(States.LOAD,
       new StateData(Config.WRIST_positionLoad, States.FLAT, States.LOAD, Config.WRIST_holdSpeedLoad));

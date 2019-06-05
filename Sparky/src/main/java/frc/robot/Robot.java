@@ -162,7 +162,9 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     Config.updateConfig(prefs);
     wrist.updateMotionMagic();
+    wrist.setupStateData();
     elevator.updateMdtionMagic();
+    elevator.setupStateData();
     boolean isCompressorOn = m_compressorState.getSelected();
     compressor.setClosedLoopControl(isCompressorOn);
     logger.log("Compressor is " + (isCompressorOn ? "ON" : "OFF"));

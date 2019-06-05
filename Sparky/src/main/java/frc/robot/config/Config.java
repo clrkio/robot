@@ -198,8 +198,7 @@ public class Config {
     public static double ELEVATOR_heightCargoRocketHigh = 64.5;
     public static double ELEVATOR_heightHatchLow = 15;
     public static double ELEVATOR_heightHatchMid = 44;
-    public static double ELEVATOR_heightHatchHigh = 68.25;
-    public static double ELEVATOR_heightMax = 68.25;
+    public static double ELEVATOR_heightHatchHigh = 70;
 
     public static double ELEVATOR_acceptableError = 200;
     public static double ELEVATOR_upSpeed = 0.4;
