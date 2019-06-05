@@ -120,13 +120,13 @@ public class Drivetrain extends SmartDashboardSubsystem {
         }
     } else {
       double directionModifer = (!isTurnInPlaceMode && requestedSpeed > 0) ? -1 : 1;
-      rotation = requestedRotation * directionModifer * 
+      rotation = requestedRotation * directionModifer; 
       if (!isToddlerMode) {
         double turnModifer = isTurnInPlaceMode ? Config.DRIVE_turnInPlaceMultiplier : Config.DRIVE_turnMultiplier; 
         rotation *= turnModifer; 
       }
 
-      speed = requestedSpeed * speedModifier; 
+      speed = requestedSpeed; 
       if (!isToddlerMode) {
         double speedModifier = isTurnInPlaceMode ? Config.DRIVE_turnInPlaceSpeedMultiplier : Config.DRIVE_driveMultiplier; 
         speed *= speedModifier; 
