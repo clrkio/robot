@@ -129,8 +129,8 @@ public class Config {
     public static double DRIVE_fastTurnTurnConstant = 2;  
     public static double DRIVE_turnInPlaceMultiplier = -.4; 
     public static double DRIVE_turnInPlaceSpeedMultiplier = .08; 
-    public static double DRIVE_toddlerModeSpeedMultiplier = 1; 
-    public static double DRIVE_toddlerModeTurnMultiplier = 1; 
+    public static double DRIVE_toddlerModeSpeedMultiplier = .7; 
+    public static double DRIVE_toddlerModeTurnMultiplier = .7; 
     public static double DRIVE_isFastSpeed = .6; 
 
     // CARGO INTAKE CONFIG
