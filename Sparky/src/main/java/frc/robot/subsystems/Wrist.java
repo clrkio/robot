@@ -36,7 +36,7 @@ public class Wrist extends SmartDashboardSubsystem {
     UP, DOWN, HOLD
   }
 
-  enum States {
+  public enum States {
     UP,
     CARGO_SHIP,
     FLAT,
@@ -91,7 +91,7 @@ public class Wrist extends SmartDashboardSubsystem {
       new StateData(Config.WRIST_positionLoad, States.FLAT, States.LOAD, Config.WRIST_holdSpeedLoad));
 
     stateData.put(States.FLAT, 
-      new StateData(Config.WRIST_positionFlat, States.UP, States.LOAD, Config.WRIST_holdSpeedFlat));
+      new StateData(Config.WRIST_positionFlat, States.CARGO_SHIP, States.LOAD, Config.WRIST_holdSpeedFlat));
 
     stateData.put(States.CARGO_SHIP, 
       new StateData(Config.WRIST_positionCargo, States.UP, States.FLAT, Config.WRIST_holdSpeedCargo));
@@ -266,6 +266,13 @@ public class Wrist extends SmartDashboardSubsystem {
 
   private double getStatePosition(States s) {
     return stateData.get(s).targetPosition;
+  }
+
+  public void setState(States nextState) {
+    if (targetState != nextState) {
+      targetState = nextState;
+      logger.log("Hard move to state: " + nextState.toString());
+    }
   }
 
   @Override

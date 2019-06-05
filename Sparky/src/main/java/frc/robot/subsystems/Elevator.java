@@ -351,7 +351,12 @@ public class Elevator extends SmartDashboardSubsystem {
     if (targetState != nextState) {
       logger.log("Moving elevator to: " + nextState.toString());
     }
+
     targetState = nextState;
+    if (Config.ELEVATOR_useNewCargoHigh &&
+          nextState == States.ROCKET_CARGO_HIGH && Robot.cargoIntake.isCargoDetected()) {
+        Robot.wrist.setState(Wrist.States.CARGO_SHIP);
+    }
   }
 
   private States getSnapToCargoState(States state) {

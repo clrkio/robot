@@ -158,7 +158,7 @@ public class Config {
     public static double WRIST_positionLoad = -2900;
     public static double WRIST_acceptableError = 100;
 
-    public static boolean WRIST_skipDown = true; 
+    public static boolean WRIST_skipDown = false; 
 
     // WRIST MOTION MAGIC CONFIGS
     public final static int WRIST_kSlotIdx = 0;
@@ -188,14 +188,16 @@ public class Config {
     public static double ELEVATOR_speedMultiplier = -.5;
     public static double ELEVATOR_encoderPerInch = 430;
 
-    public static double ELEVATOR_heightCargoLoadGround = 0;
+    
+    public static double ELEVATOR_heightCargoLoadGround = 1;
     public static double ELEVATOR_heightCargoScore = 22.5;
+    public static double ELEVATOR_heightHatchLow = 16;
+    public static double ELEVATOR_heightHatchMid = 45;
+    public static double ELEVATOR_heightHatchHigh = 69.5;
     public static double ELEVATOR_heightCargoRocketLow = 7.5;
-    public static double ELEVATOR_heightCargoRocketMid = 35.5;
-    public static double ELEVATOR_heightCargoRocketHigh = 64.5;
-    public static double ELEVATOR_heightHatchLow = 15;
-    public static double ELEVATOR_heightHatchMid = 44;
-    public static double ELEVATOR_heightHatchHigh = 70;
+    public static double ELEVATOR_heightCargoRocketMid = 36.5;
+    public static double ELEVATOR_heightCargoRocketHigh = ELEVATOR_heightHatchHigh;
+    
 
     public static double ELEVATOR_acceptableError = 200;
     public static double ELEVATOR_upSpeed = 0.4;
@@ -211,6 +213,7 @@ public class Config {
     public static final int ELEVATOR_rocketCargoHigh = 7; 
     public static final int ELEVATOR_hatchHigh = 8; 
     public static final int ELEVATOR_manual = 9;
+    public static final boolean ELEVATOR_useNewCargoHigh = true;
 
     // ELEVATOR MOTION MAGIC CONFIGS
     public final static int ELEVATOR_kSlotIdx = 0;
