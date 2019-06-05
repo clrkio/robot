@@ -7,22 +7,19 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.command.Subsystem;
-
-import frc.robot.config.*;
-import frc.robot.impls.SmartDashboardSubsystem;
-import frc.robot.Logger;
-import frc.robot.commands.Drivetrain.ControlledDriveCommand;
-
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANEncoder; 
+
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Logger;
+import frc.robot.commands.Drivetrain.ControlledDriveCommand;
+import frc.robot.config.Config;
+import frc.robot.impls.SmartDashboardSubsystem;
 
 /**
  * Add your docs here.

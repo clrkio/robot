@@ -7,22 +7,27 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
+import frc.robot.commands.ZeroEncodersCommand;
+import frc.robot.commands.CargoIntake.CargoIntakeInCommand;
+import frc.robot.commands.CargoIntake.CargoIntakeOutCommand;
+import frc.robot.commands.CargoIntake.CargoIntakeTogglePhotoelectricCommand;
+import frc.robot.commands.Drivetrain.HighSpeedShiftCommand;
+import frc.robot.commands.Drivetrain.LowSpeedShiftCommand;
+import frc.robot.commands.Drivetrain.ToggleIdleModeCommand;
+import frc.robot.commands.Elevator.ElevatorSetStateCommand;
+import frc.robot.commands.HatchIntake.HatchExtendCommand;
+import frc.robot.commands.HatchIntake.HatchIntakeInCommand;
+import frc.robot.commands.HatchIntake.HatchIntakeOutCommand;
+import frc.robot.commands.HatchIntake.HatchRetractCommand;
+import frc.robot.commands.Wrist.WristLowerCommand;
+import frc.robot.commands.Wrist.WristRaiseCommand;
 import frc.robot.config.Config;
 import frc.robot.impls.JoystickAxisButton;
 import frc.robot.subsystems.Elevator.States;
-import frc.robot.commands.Drivetrain.*;
-import frc.robot.commands.Elevator.*;
-import frc.robot.commands.ZeroEncodersCommand;
-import frc.robot.commands.CargoIntake.*;
-import frc.robot.commands.HatchIntake.*;
-import frc.robot.commands.Wrist.WristLowerCommand;
-import frc.robot.commands.Wrist.WristRaiseCommand;
-
 
 /**
  * This class is the glue that binds the controls on the physical operator

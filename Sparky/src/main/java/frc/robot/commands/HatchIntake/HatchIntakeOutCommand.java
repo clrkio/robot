@@ -7,10 +7,8 @@
 
 package frc.robot.commands.HatchIntake;
 
-import frc.robot.Robot;
-import frc.robot.config.Config; 
 import edu.wpi.first.wpilibj.command.Command;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import frc.robot.Robot;
 
 public class HatchIntakeOutCommand extends Command {
   public HatchIntakeOutCommand() {

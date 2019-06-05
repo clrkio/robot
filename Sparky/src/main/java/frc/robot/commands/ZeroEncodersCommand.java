@@ -28,5 +28,6 @@ public class ZeroEncodersCommand extends Command {
   @Override
   protected boolean isFinished() {
     return Robot.elevator.isBottomSwitchHit() && Robot.wrist.isUpLimitHit();
+    // return Robot.wrist.isUpLimitHit();
   }
 }

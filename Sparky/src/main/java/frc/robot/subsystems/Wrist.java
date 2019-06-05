@@ -73,7 +73,9 @@ public class Wrist extends SmartDashboardSubsystem {
     setupStateData();
     wristMotor = new WPI_TalonSRX(Config.CAN_wrist);
     wristMotor.setNeutralMode(NeutralMode.Brake);
-
+    wristMotor.setSensorPhase(true);
+    wristMotor.setInverted(false);
+    
     upLimitSwitch = new DigitalInput(Config.WRIST_backstopDIO);
     setupMotionMagic();
 
@@ -81,7 +83,6 @@ public class Wrist extends SmartDashboardSubsystem {
     direction = Direction.HOLD;
     setSpeed = 0;
     autoSpeed = 0;
-    hold();
   }
 
   private void setupStateData() {
@@ -90,7 +91,7 @@ public class Wrist extends SmartDashboardSubsystem {
       new StateData(Config.WRIST_positionLoad, States.FLAT, States.LOAD, Config.WRIST_holdSpeedLoad));
 
     stateData.put(States.FLAT, 
-      new StateData(Config.WRIST_positionFlat, States.CARGO_SHIP, States.LOAD, Config.WRIST_holdSpeedFlat));
+      new StateData(Config.WRIST_positionFlat, States.UP, States.LOAD, Config.WRIST_holdSpeedFlat));
 
     stateData.put(States.CARGO_SHIP, 
       new StateData(Config.WRIST_positionCargo, States.UP, States.FLAT, Config.WRIST_holdSpeedCargo));
@@ -105,12 +106,6 @@ public class Wrist extends SmartDashboardSubsystem {
       new StateData(Config.WRIST_positionUp, States.UP, States.FLAT, Config.WRIST_holdSpeedUp));
   }
 
-  public void init() {
-    wristMotor.configFactoryDefault(); 
-    wristMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1);
-		wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-  }  
-
   public double getWristPosition() {
     return wristMotor.getSelectedSensorPosition();
   }
@@ -119,15 +114,19 @@ public class Wrist extends SmartDashboardSubsystem {
     if (Math.abs(speed) > 0.05) {
       targetState = States.MANUAL;
       setSpeed = speed;
+      wristMotor.configForwardSoftLimitEnable(false);
+      wristMotor.configReverseSoftLimitEnable(false);
     } else if (targetState == States.ZEROING) {
       return;
-    } else if (Config.WRIST_usePID) {
-
-      // wristMotor.set(ControlMode.MotionMagic,
-      //                getTargetPosition(), DemandType.ArbitraryFeedForward, getFeedForward());
-      logger.log(String.format("Would set (position, feed forward): (%d, %d)", getTargetPosition(), getFeedForward()));
-      return;
     } else if (targetState != States.MANUAL) {
+      if (Config.WRIST_usePID) {
+        wristMotor.configForwardSoftLimitEnable(true);
+        wristMotor.configReverseSoftLimitEnable(true);
+        wristMotor.set(ControlMode.MotionMagic,
+                       getTargetPosition(), DemandType.ArbitraryFeedForward, getFeedForward());
+        return;
+      }
+      // old school auto code...
       setSpeed = getAutoSpeed();
     }
 
@@ -137,10 +136,10 @@ public class Wrist extends SmartDashboardSubsystem {
       logger.log("Too high");
     }
 
-    if (position > Config.WRIST_positionLoad && setSpeed < 0) {
-      setSpeed = Config.WRIST_holdSpeedLoad;
-      logger.log("Too low");
-    }
+    // if (position > Config.WRIST_positionLoad && setSpeed < 0) {
+    //   setSpeed = Config.WRIST_holdSpeedLoad;
+    //   logger.log("Too low");
+    // }
 
     wristMotor.set(setSpeed);
     double currMotorOutput = wristMotor.getMotorOutputPercent();
@@ -148,13 +147,13 @@ public class Wrist extends SmartDashboardSubsystem {
     double maxVelocity = 0;
     if (currMotorOutput != 0) {
       maxVelocity = currVelocity / currMotorOutput;
+      logger.log(String.format("Motor values (output, velocity, max): (%f, %f, %f)", currMotorOutput, currVelocity, maxVelocity));
     }
-
-    logger.log(String.format("Motor values (output, velocity, max): (%f, %f, %f)", currMotorOutput, currVelocity, maxVelocity));
   }
 
   // Magic motion code
   private void setupMotionMagic() {
+    wristMotor.configFactoryDefault();
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
                                             Config.WRIST_kPIDLoopIdx,
                                             Config.WRIST_kTimeoutMs);
@@ -165,6 +164,9 @@ public class Wrist extends SmartDashboardSubsystem {
 		wristMotor.configNominalOutputReverse(0, Config.WRIST_kTimeoutMs);
 		wristMotor.configPeakOutputForward(1, Config.WRIST_kTimeoutMs);
     wristMotor.configPeakOutputReverse(-1, Config.WRIST_kTimeoutMs);
+
+    wristMotor.configForwardSoftLimitThreshold((int) Config.WRIST_positionUp);
+    wristMotor.configReverseSoftLimitThreshold((int) Config.WRIST_positionLoad);
     
     wristMotor.selectProfileSlot(Config.WRIST_kSlotIdx, Config.WRIST_kPIDLoopIdx);
 		wristMotor.config_kF(Config.WRIST_kSlotIdx, Config.WRIST_kF, Config.WRIST_kTimeoutMs);
@@ -176,8 +178,18 @@ public class Wrist extends SmartDashboardSubsystem {
     wristMotor.configMotionAcceleration(getAcceleration(), Config.WRIST_kTimeoutMs);
   }
 
+  public void updateMotionMagic() {
+    wristMotor.config_kF(Config.WRIST_kSlotIdx, Config.WRIST_kF, Config.WRIST_kTimeoutMs);
+		wristMotor.config_kP(Config.WRIST_kSlotIdx, Config.WRIST_kP, Config.WRIST_kTimeoutMs);
+		wristMotor.config_kI(Config.WRIST_kSlotIdx, Config.WRIST_kI, Config.WRIST_kTimeoutMs);
+		wristMotor.config_kD(Config.WRIST_kSlotIdx, Config.WRIST_kD, Config.WRIST_kTimeoutMs);
+
+    wristMotor.configMotionCruiseVelocity(getCruiseVelocity(), Config.WRIST_kTimeoutMs);
+    wristMotor.configMotionAcceleration(getAcceleration(), Config.WRIST_kTimeoutMs);
+  }
+
   private int getCruiseVelocity() {
-    return (int)Math.round(Config.WRIST_kMaxVelocity * Config.WRIST_kCruiseVelocityPercentage);
+    return (int)Config.WRIST_kCruiseVelocity;
   }
 
   private int getAcceleration() {
@@ -200,31 +212,19 @@ public class Wrist extends SmartDashboardSubsystem {
     double diff = targetPosition - currPosition;
     if (Math.abs(diff) <= Config.WRIST_acceptableError) {
       // Close enough
-      hold();
+      direction = Direction.HOLD;
+      autoSpeed = stateData.get(targetState).holdSpeed;
     }
-    else if (diff > 0) {
-      driveDown();
+    else if (diff < 0) {
+      direction = Direction.DOWN;
+      autoSpeed = Config.WRIST_lowerSpeed;
     }
-    else {
-      driveUp();
+    else {  
+      direction = Direction.UP;
+      autoSpeed = Config.WRIST_raiseSpeed;
     }
 
     return autoSpeed;
-  }
-
-  private void driveUp() {
-    direction = Direction.UP;
-    autoSpeed = Config.WRIST_raiseSpeed;
-  }
-
-  private void driveDown() {
-    direction = Direction.DOWN;
-    autoSpeed = Config.WRIST_lowerSpeed;
-  }
-
-  private void hold() {
-    direction = Direction.HOLD;
-    autoSpeed = stateData.get(targetState).holdSpeed;
   }
 
   public void raise() {
@@ -277,6 +277,9 @@ public class Wrist extends SmartDashboardSubsystem {
     SmartDashboard.putNumber("Wrist Raw Position", getWristPosition());
     SmartDashboard.putNumber("Wrist Target Position", getTargetPosition());
     SmartDashboard.putBoolean("Wrist Up Limit Hit", isUpLimitHit());
+    // Instrum.Process(wristMotor, new StringBuilder());
+    // SmartDashboard.putNumber("Cruise velocity", getCruiseVelocity());
+    // SmartDashboard.putNumber("accel", getAcceleration());
   }
 
   @Override
@@ -286,6 +289,8 @@ public class Wrist extends SmartDashboardSubsystem {
 
   public void zeroEncoder() {
     targetState = States.ZEROING; 
+    wristMotor.configForwardSoftLimitEnable(false);
+    wristMotor.configReverseSoftLimitEnable(false);
     if (!isUpLimitHit()) {
       setSpeed = Config.WRIST_raiseSpeed; 
       wristMotor.set(setSpeed); 
@@ -306,8 +311,8 @@ public class Wrist extends SmartDashboardSubsystem {
       SmartDashboard.putNumber("SensorVel", tal.getSelectedSensorVelocity(Config.WRIST_kPIDLoopIdx));
       SmartDashboard.putNumber("SensorPos", tal.getSelectedSensorPosition(Config.WRIST_kPIDLoopIdx));
       SmartDashboard.putNumber("MotorOutputPercent", tal.getMotorOutputPercent());
+      SmartDashboard.putNumber("MotorOutput", tal.get());
       SmartDashboard.putNumber("ClosedLoopError", tal.getClosedLoopError(Config.WRIST_kPIDLoopIdx));
-      
       /* Check if Talon SRX is performing Motion Magic */
       if (tal.getControlMode() == ControlMode.MotionMagic) {
         ++_timesInMotionMagic;

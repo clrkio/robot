@@ -9,9 +9,11 @@ package frc.robot.subsystems;
 
 import java.util.HashMap;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -80,16 +82,20 @@ public class Elevator extends SmartDashboardSubsystem {
     elevatorSlaveMotor = new WPI_TalonSRX(Config.CAN_elevatorRight); 
     elevatorSlaveMotor.follow(elevatorMasterMotor);
 
-    elevatorMasterMotor.setInverted(false);
+    elevatorMasterMotor.setInverted(true);
     elevatorSlaveMotor.setInverted(InvertType.FollowMaster);
+    elevatorMasterMotor.setSensorPhase(true);
+    elevatorSlaveMotor.setSensorPhase(true);
 
     elevatorMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
     elevatorMasterMotor.setNeutralMode(NeutralMode.Brake); 
-    elevatorSlaveMotor.setNeutralMode(NeutralMode.Brake); 
+    elevatorSlaveMotor.setNeutralMode(NeutralMode.Brake);
+    setupMotionMagic(); 
 
     topSwitch = new DigitalInput(Config.ELEVATOR_topSwitchDIO);
     bottomSwitch = new DigitalInput(Config.ELEVATOR_bottomSwitchDIO);
+    
     setSpeed = 0;
     autoSpeed = 0;
     targetState = States.MANUAL;
@@ -149,14 +155,65 @@ public class Elevator extends SmartDashboardSubsystem {
                     States.CARGO_LOAD, States.CARGO_LOAD));
   }
 
+  // Magic motion code
+  private void setupMotionMagic() {
+    elevatorMasterMotor.configFactoryDefault();
+    elevatorMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
+                                            Config.ELEVATOR_kPIDLoopIdx,
+                                            Config.ELEVATOR_kTimeoutMs);
+    elevatorMasterMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Config.ELEVATOR_kTimeoutMs);
+    elevatorMasterMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Config.ELEVATOR_kTimeoutMs);
+
+    
+    elevatorMasterMotor.configForwardSoftLimitThreshold((int) getStateTargetPosition(States.HATCH_HIGH));
+    elevatorMasterMotor.configReverseSoftLimitThreshold((int) getStateTargetPosition(States.CARGO_LOAD));
+
+    elevatorMasterMotor.configNominalOutputForward(0, Config.ELEVATOR_kTimeoutMs);
+		elevatorMasterMotor.configNominalOutputReverse(0, Config.ELEVATOR_kTimeoutMs);
+		elevatorMasterMotor.configPeakOutputForward(1, Config.ELEVATOR_kTimeoutMs);
+    elevatorMasterMotor.configPeakOutputReverse(-1, Config.ELEVATOR_kTimeoutMs);
+
+    updateMdtionMagic();
+  }
+
+  public void updateMdtionMagic() {
+    elevatorMasterMotor.selectProfileSlot(Config.ELEVATOR_kSlotIdx, Config.ELEVATOR_kPIDLoopIdx);
+		elevatorMasterMotor.config_kF(Config.ELEVATOR_kSlotIdx, Config.ELEVATOR_kF, Config.ELEVATOR_kTimeoutMs);
+		elevatorMasterMotor.config_kP(Config.ELEVATOR_kSlotIdx, Config.ELEVATOR_kP, Config.ELEVATOR_kTimeoutMs);
+		elevatorMasterMotor.config_kI(Config.ELEVATOR_kSlotIdx, Config.ELEVATOR_kI, Config.ELEVATOR_kTimeoutMs);
+		elevatorMasterMotor.config_kD(Config.ELEVATOR_kSlotIdx, Config.ELEVATOR_kD, Config.ELEVATOR_kTimeoutMs);
+
+    elevatorMasterMotor.configMotionCruiseVelocity(getCruiseVelocity(), Config.ELEVATOR_kTimeoutMs);
+    elevatorMasterMotor.configMotionAcceleration(getAcceleration(), Config.ELEVATOR_kTimeoutMs);
+  }
+
+  private int getCruiseVelocity() {
+    return (int)Math.round(Config.ELEVATOR_kCruiseVelocity);
+  }
+
+  private int getAcceleration() {
+    return (int)Math.round(getCruiseVelocity() / Config.ELEVATOR_kAccelerationNumSec);
+  }
+
   public void move(double speed) {
     if (Math.abs(speed) > 0.05) {
       targetState = States.MANUAL;
       setSpeed = speed;
+      elevatorMasterMotor.configForwardSoftLimitEnable(false);
+      elevatorMasterMotor.configReverseSoftLimitEnable(false);
     }
     else if (targetState == States.ZEROING) {
       return;
     } else if (targetState != States.MANUAL) {
+      elevatorMasterMotor.configForwardSoftLimitEnable(true);
+      elevatorMasterMotor.configReverseSoftLimitEnable(true);
+
+      if (Config.ELEVATOR_usePID) {
+        elevatorMasterMotor.set(ControlMode.MotionMagic, getTargetPosition());
+        return;
+      }
+
+      // OLD SHIT
       setSpeed = getAutoSpeed();
     }
 
@@ -171,6 +228,14 @@ public class Elevator extends SmartDashboardSubsystem {
 
     // Actually set the speed
     elevatorMasterMotor.set(setSpeed);
+
+    double currMotorOutput = elevatorMasterMotor.getMotorOutputPercent();
+    double currVelocity = elevatorMasterMotor.getSelectedSensorVelocity();
+    double maxVelocity = 0;
+    if (currMotorOutput != 0) {
+      maxVelocity = currVelocity / currMotorOutput;
+      logger.log(String.format("Motor values (output, velocity, max): (%f, %f, %f)", currMotorOutput, currVelocity, maxVelocity));
+    }
   }
 
   public boolean isTopSwitchHit() {
@@ -378,6 +443,9 @@ public class Elevator extends SmartDashboardSubsystem {
     }
 
     targetState = States.ZEROING;
+    
+    elevatorMasterMotor.configForwardSoftLimitEnable(false);
+    elevatorMasterMotor.configReverseSoftLimitEnable(false);
     if (!isBottomSwitchHit()) {
       setSpeed = Config.ELEVATOR_downSpeed;
       elevatorMasterMotor.set(setSpeed);

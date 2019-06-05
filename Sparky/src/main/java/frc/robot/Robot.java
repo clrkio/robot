@@ -7,21 +7,22 @@
 
 package frc.robot;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.util.ArrayList;
-
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.config.Config;
 import frc.robot.impls.SmartDashboardSubsystem;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.CargoIntake;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.HatchIntake;
+import frc.robot.subsystems.Wrist;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -76,8 +77,13 @@ public class Robot extends TimedRobot {
     compressor = new Compressor(0);
     
     SmartDashboard.putData("Compress on", m_compressorState);
-    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(); 
-    camera.setResolution((int)Config.CAMERA_resX, (int)Config.CAMERA_resY);
+    UsbCamera frontCamera = CameraServer.getInstance().startAutomaticCapture(Config.CAMERA_frontUsbPort);
+    frontCamera.setResolution((int)Config.CAMERA_frontResX, (int)Config.CAMERA_frontResY);
+    frontCamera.setFPS((int)Config.CAMERA_frontFPS);
+
+    UsbCamera bottomCamera = CameraServer.getInstance().startAutomaticCapture(Config.CAMERA_bottomUsbPort); 
+    bottomCamera.setResolution((int)Config.CAMERA_bottomResX, (int)Config.CAMERA_bottomResY);
+    bottomCamera.setFPS((int)Config.CAMERA_bottomFPS);
   }
 
   /**
@@ -155,6 +161,8 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     Config.updateConfig(prefs);
+    wrist.updateMotionMagic();
+    elevator.updateMdtionMagic();
     boolean isCompressorOn = m_compressorState.getSelected();
     compressor.setClosedLoopControl(isCompressorOn);
     logger.log("Compressor is " + (isCompressorOn ? "ON" : "OFF"));

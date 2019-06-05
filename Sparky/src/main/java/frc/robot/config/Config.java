@@ -110,8 +110,14 @@ public class Config {
     public static final int SOLENOID_hatchExtend = 0;
 
     // CAMERA CONFIG 
-    public static double CAMERA_resX = 480; 
-    public static double CAMERA_resY = 320; 
+    public static final int CAMERA_frontUsbPort = 0;
+    public static final int CAMERA_bottomUsbPort = 1;
+    public static double CAMERA_frontResX = 480; 
+    public static double CAMERA_frontResY = 320;
+    public static double CAMERA_frontFPS = 15;
+    public static double CAMERA_bottomResX = 320; 
+    public static double CAMERA_bottomResY = 240; 
+    public static double CAMERA_bottomFPS = 10;
 
     // DRIVE CONFIG
     public static boolean DRIVE_disableNeoInHighSpeed = false;
@@ -150,27 +156,26 @@ public class Config {
     public static double WRIST_speedMultiplier = -.25;
 
     public static double WRIST_positionUp = 0;
-    public static double WRIST_positionCargo = 1000;
-    public static double WRIST_positionFlat = 2500;
-    public static double WRIST_positionLoad = 2900;
+    public static double WRIST_positionCargo = -1000;
+    public static double WRIST_positionFlat = -2500;
+    public static double WRIST_positionLoad = -2900;
     public static double WRIST_acceptableError = 100;
 
     public static boolean WRIST_skipDown = true; 
-    public static boolean WRIST_autoUp = true; 
 
+    // WRIST MOTION MAGIC CONFIGS
     public final static int WRIST_kSlotIdx = 0;
     public final static int WRIST_kPIDLoopIdx = 0;
     public final static int WRIST_kTimeoutMs = 0;
-    public static boolean WRIST_usePID = false;
-    public static double WRIST_kP = 0;
+    public static boolean WRIST_usePID = true;
+    public static double WRIST_kP = 0.7;
     public static double WRIST_kI = 0;
     public static double WRIST_kD = 0;
     public static double WRIST_kF = 0;
     public static double WRIST_kIzone = 0;
     public static double WRIST_kPeakOutput = 0.2;
-    public static double WRIST_kMaxVelocity = 15000;
-    public static double WRIST_kCruiseVelocityPercentage = 0.5;
-    public static double WRIST_kAccelerationNumSec = 1;
+    public static double WRIST_kCruiseVelocity = 700;
+    public static double WRIST_kAccelerationNumSec = 0.75;
 
     // HATCH INTAKE CONFIG
     public static final int HATCH_INTAKE_leftSwitchDIO = 0; 
@@ -186,15 +191,15 @@ public class Config {
     public static double ELEVATOR_speedMultiplier = -.5;
     public static double ELEVATOR_encoderPerInch = 430;
 
-    public static double ELEVATOR_heightCargoLoadGround = -1;
-    public static double ELEVATOR_heightCargoScore = 21;
-    public static double ELEVATOR_heightCargoRocketLow = 6;
-    public static double ELEVATOR_heightCargoRocketMid = 34;
-    public static double ELEVATOR_heightCargoRocketHigh = 63;
-    public static double ELEVATOR_heightHatchLow = 13.5;
-    public static double ELEVATOR_heightHatchMid = 42.5;
-    public static double ELEVATOR_heightHatchHigh = 69;
-    public static double ELEVATOR_heightMax = 68;
+    public static double ELEVATOR_heightCargoLoadGround = 0;
+    public static double ELEVATOR_heightCargoScore = 22.5;
+    public static double ELEVATOR_heightCargoRocketLow = 7.5;
+    public static double ELEVATOR_heightCargoRocketMid = 35.5;
+    public static double ELEVATOR_heightCargoRocketHigh = 64.5;
+    public static double ELEVATOR_heightHatchLow = 15;
+    public static double ELEVATOR_heightHatchMid = 44;
+    public static double ELEVATOR_heightHatchHigh = 68.25;
+    public static double ELEVATOR_heightMax = 68.25;
 
     public static double ELEVATOR_acceptableError = 200;
     public static double ELEVATOR_upSpeed = 0.4;
@@ -209,7 +214,22 @@ public class Config {
     public static final int ELEVATOR_hatchMid = 6; 
     public static final int ELEVATOR_rocketCargoHigh = 7; 
     public static final int ELEVATOR_hatchHigh = 8; 
-    public static final int ELEVATOR_manual = 9; 
+    public static final int ELEVATOR_manual = 9;
+
+    // ELEVATOR MOTION MAGIC CONFIGS
+    public final static int ELEVATOR_kSlotIdx = 0;
+    public final static int ELEVATOR_kPIDLoopIdx = 0;
+    public final static int ELEVATOR_kTimeoutMs = 0;
+    public static boolean ELEVATOR_usePID = true;
+    public static double ELEVATOR_kP = .6;
+    public static double ELEVATOR_kI = 0;
+    public static double ELEVATOR_kD = 0;
+    public static double ELEVATOR_kF = 0;
+    public static double ELEVATOR_kIzone = 0;
+    public static double ELEVATOR_kPeakOutput = 0.2;
+    public static double ELEVATOR_kCruiseVelocity = 2500;
+    public static double ELEVATOR_kAccelerationNumSec = 0.75;
+
 
     // LIMELIGHT CONFIG
     public static final int LIMELIGHT_LED_ON = 3; 

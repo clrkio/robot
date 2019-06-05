@@ -7,19 +7,18 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.config.*;
-import frc.robot.impls.SmartDashboardSubsystem;
-import frc.robot.Logger;
-import frc.robot.Robot;
-import frc.robot.commands.HatchIntake.HatchIntakeDefaultCommand;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import frc.robot.Logger;
+import frc.robot.Robot;
+import frc.robot.commands.HatchIntake.HatchIntakeDefaultCommand;
+import frc.robot.config.Config;
+import frc.robot.impls.SmartDashboardSubsystem;
 
 /**
  * Add your docs here.
