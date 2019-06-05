@@ -17,6 +17,7 @@ public class ControlledDriveCommand extends Command {
   private static Logger logger = new Logger(ControlledDriveCommand.class.getSimpleName());
   protected double speed;
   protected double rotation; 
+  protected boolean brakeMode; 
 
   public ControlledDriveCommand() {
     requires((Robot.drivetrain));
@@ -59,7 +60,11 @@ public class ControlledDriveCommand extends Command {
   }
 
   protected void setBrakeMode() {
-    Robot.drivetrain.setIdleMode(IO.driverGamepad.getRawButton(Config.GAMEPAD_driveBrakeModeButton));
+    boolean newBrakeMode = IO.driverGamepad.getRawButton(Config.GAMEPAD_driveBrakeModeButton); 
+    if (newBrakeMode != brakeMode) {
+      brakeMode = newBrakeMode; 
+      Robot.drivetrain.setIdleMode(brakeMode);
+    }
   }
   
   protected void updateDrivetrain() {
