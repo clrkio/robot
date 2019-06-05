@@ -111,14 +111,20 @@ public class Drivetrain extends SmartDashboardSubsystem {
 
   public void set(double requestedSpeed, double requestedRotation) {
     if (isFastTurnMode) {
-      double slowSpeed = requestedSpeed * Config.DRIVE_fastTurnSpeedMultiplier; 
-      double fastSpeedMultiplier = Math.abs(requestedRotation) + Config.DRIVE_fastTurnTurnConstant; 
-      double fastSpeed = slowSpeed * fastSpeedMultiplier; 
-        if (requestedRotation < 0) {
-          robotDrive.tankDrive(fastSpeed, slowSpeed);
-        } else {
-          robotDrive.tankDrive(slowSpeed, fastSpeed);
-        }
+      if (requestedSpeed == 0 || requestedRotation == 0) {
+        speed = 0; 
+        rotation = 0; 
+        robotDrive.curvatureDrive(speed, rotation, isTurnInPlaceMode); 
+      } else {
+        double slowSpeed = requestedSpeed * Config.DRIVE_fastTurnSpeedMultiplier; 
+        double fastSpeedMultiplier = Math.abs(requestedRotation) + Config.DRIVE_fastTurnTurnConstant; 
+        double fastSpeed = slowSpeed * fastSpeedMultiplier; 
+          if (requestedRotation < 0) {
+            robotDrive.tankDrive(fastSpeed, slowSpeed);
+          } else {
+            robotDrive.tankDrive(slowSpeed, fastSpeed);
+          }
+      }
     } else {
       double directionModifer = (!isTurnInPlaceMode && requestedSpeed > 0) ? -1 : 1;
       double turnModifer = isTurnInPlaceMode ? Config.DRIVE_turnInPlaceMultiplier : Config.DRIVE_turnMultiplier; 
