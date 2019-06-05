@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Logger;
+import frc.robot.Robot;
 import frc.robot.commands.Drivetrain.ControlledDriveCommand;
 import frc.robot.config.Config;
 import frc.robot.impls.SmartDashboardSubsystem;
@@ -120,16 +121,20 @@ public class Drivetrain extends SmartDashboardSubsystem {
         }
     } else {
       double directionModifer = (!isTurnInPlaceMode && requestedSpeed > 0) ? -1 : 1;
-      rotation = requestedRotation * directionModifer; 
-      if (!isToddlerMode) {
-        double turnModifer = isTurnInPlaceMode ? Config.DRIVE_turnInPlaceMultiplier : Config.DRIVE_turnMultiplier; 
-        rotation *= turnModifer; 
-      }
+      double turnModifer = isTurnInPlaceMode ? Config.DRIVE_turnInPlaceMultiplier : Config.DRIVE_turnMultiplier; 
+      rotation = requestedRotation * directionModifer * turnModifer; 
 
-      speed = requestedSpeed; 
-      if (!isToddlerMode) {
-        double speedModifier = isTurnInPlaceMode ? Config.DRIVE_turnInPlaceSpeedMultiplier : Config.DRIVE_driveMultiplier; 
-        speed *= speedModifier; 
+      double speedModifier = isTurnInPlaceMode ? Config.DRIVE_turnInPlaceSpeedMultiplier : Config.DRIVE_driveMultiplier; 
+      speed = requestedSpeed * speedModifier; 
+
+      if (isToddlerMode) {
+        speed *= Config.DRIVE_toddlerModeSpeedMultiplier; 
+        rotation *= Config.DRIVE_toddlerModeTurnMultiplier; 
+      }
+      if (speed > Config.DRIVE_isFastSpeed) {
+        Robot.compressor.stop();
+      } else if (!Robot.compressor.enabled()) {
+        Robot.compressor.start();
       }
       robotDrive.curvatureDrive(speed, rotation, isTurnInPlaceMode); 
     }

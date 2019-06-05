@@ -131,10 +131,7 @@ public class Config {
     public static double DRIVE_turnInPlaceSpeedMultiplier = .08; 
     public static double DRIVE_toddlerModeSpeedMultiplier = 1; 
     public static double DRIVE_toddlerModeTurnMultiplier = 1; 
-    public static double DRIVE_autoDriveMultiplier = .1; 
-    public static double DRIVE_autoTurnMultiplier = 1;
-    public static double DRIVE_autoMaxSpeed = .15; 
-    public static double DRIVE_autoMinSpeed = 0;
+    public static double DRIVE_isFastSpeed = .6; 
 
     // CARGO INTAKE CONFIG
     public static final int CARGO_INTAKE_photoelectricDIO = 2; 
