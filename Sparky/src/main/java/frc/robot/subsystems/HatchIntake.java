@@ -54,7 +54,7 @@ public class HatchIntake extends SmartDashboardSubsystem {
   }
 
   public boolean isLeftSwitchPressed() {
-    return !leftSwitch.get(); 
+    return Config.forceLeftSwithOn || !leftSwitch.get(); 
   }
 
   public boolean isRightSwitchPressed() {
@@ -66,10 +66,13 @@ public class HatchIntake extends SmartDashboardSubsystem {
   }
 
   public boolean isHatchExtended() {
-    return isHatchExtended;
+    return (!Config.hatchExtendDisabled && isHatchExtended);
   }
 
   public void extendHatch() {
+    if (Config.hatchExtendDisabled) {
+      return;
+    }
     if (isHatchExtended) {
       return; // Already extended
     }
@@ -85,6 +88,10 @@ public class HatchIntake extends SmartDashboardSubsystem {
   }
 
   public void retractHatch() {
+    if (Config.hatchExtendDisabled) {
+      return;
+    }
+    
     if (!isHatchExtended) {
       return; // Already retracted
     }
@@ -100,7 +107,7 @@ public class HatchIntake extends SmartDashboardSubsystem {
   }
 
   public void feedIn() {
-    if (!isHatchExtended() || isHatchLoaded()) {
+    if ((!Config.hatchExtendDisabled && !isHatchExtended()) || isHatchLoaded()) {
       stop();
       return;
     }
@@ -110,7 +117,7 @@ public class HatchIntake extends SmartDashboardSubsystem {
   }
 
   public void feedOut() {
-    if (!isHatchExtended()) {
+    if (!Config.hatchExtendDisabled && !isHatchExtended()) {
       stop();
       return;
     }
@@ -125,10 +132,10 @@ public class HatchIntake extends SmartDashboardSubsystem {
   }
 
   public void stop() {
-    if (isHatchExtended() && isHatchLoaded()) {
+    if ((Config.hatchExtendDisabled || isHatchExtended()) && isHatchLoaded()) {
       holdIn();
       return;
-    }
+    }   
 
     rollerMotor.stopMotor();
     direction = Direction.STOP;

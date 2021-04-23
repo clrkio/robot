@@ -414,7 +414,7 @@ public class Elevator extends SmartDashboardSubsystem {
   }
   
   public boolean isSafeForHatch() {
-    return getPosition() >= (getStateTargetPosition(States.HATCH_LOW) - Config.ELEVATOR_acceptableError);
+    return Config.ELEVATOR_IGNORE_HATCH || (getPosition() >= (getStateTargetPosition(States.HATCH_LOW) - Config.ELEVATOR_acceptableError));
   }
 
   @Override

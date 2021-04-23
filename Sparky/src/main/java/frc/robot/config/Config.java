@@ -112,9 +112,9 @@ public class Config {
     // CAMERA CONFIG 
     public static final int CAMERA_frontUsbPort = 0;
     public static final int CAMERA_bottomUsbPort = 1;
-    public static double CAMERA_frontResX = 480; 
-    public static double CAMERA_frontResY = 320;
-    public static double CAMERA_frontFPS = 15;
+    public static double CAMERA_frontResX = 320; 
+    public static double CAMERA_frontResY = 240;
+    public static double CAMERA_frontFPS = 20;
     public static double CAMERA_bottomResX = 320; 
     public static double CAMERA_bottomResY = 240; 
     public static double CAMERA_bottomFPS = 10;
@@ -181,6 +181,9 @@ public class Config {
     public static double HATCH_INTAKE_rollerSpeedOut = -0.6;
     public static double HATCH_INTAKE_rollerSpeedHold = 0.1;
 
+    public static boolean hatchExtendDisabled = false;
+    public static boolean forceLeftSwithOn = false;
+
     // ELEVATOR CONFIG 
     public static final int ELEVATOR_bottomSwitchDIO = 5; 
     public static final int ELEVATOR_topSwitchDIO = 4; 
@@ -191,13 +194,15 @@ public class Config {
     
     public static double ELEVATOR_heightCargoLoadGround = 1;
     public static double ELEVATOR_heightCargoScore = 22.5;
-    public static double ELEVATOR_heightHatchLow = 16;
-    public static double ELEVATOR_heightHatchMid = 45;
-    public static double ELEVATOR_heightHatchHigh = 69.5;
+    public static double ELEVATOR_heightHatchLow = 15.5;
+    public static double ELEVATOR_heightHatchMid = 47;
+    public static double ELEVATOR_heightHatchHigh = 70;
     public static double ELEVATOR_heightCargoRocketLow = 7.5;
     public static double ELEVATOR_heightCargoRocketMid = 36.5;
     public static double ELEVATOR_heightCargoRocketHigh = ELEVATOR_heightHatchHigh;
     
+    public static boolean ELEVATOR_IGNORE_HATCH = false;
+
 
     public static double ELEVATOR_acceptableError = 200;
     public static double ELEVATOR_upSpeed = 0.4;
